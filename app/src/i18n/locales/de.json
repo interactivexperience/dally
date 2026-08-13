@@ -1,0 +1,50 @@
+{
+  "app": {
+    "name": "Sparfuchs",
+    "tagline": "Alle Angebote an einem Ort"
+  },
+  "nav": {
+    "offers": "Angebote",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "login": {
+    "title": "Anmelden",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "loading": "Anmeldung läuft …",
+    "error": "Anmeldung fehlgeschlagen. Bitte E-Mail und Passwort prüfen."
+  },
+  "offers": {
+    "title": "Angebote",
+    "newThisWeek": "Neu diese Woche",
+    "searchLabel": "Angebote durchsuchen",
+    "searchPlaceholder": "z. B. Butter, Windeln, Apfel …",
+    "discounterLabel": "Händler",
+    "allDiscounters": "Alle Händler",
+    "empty": "Keine Angebote gefunden. Versuche einen anderen Suchbegriff oder Händler.",
+    "loading": "Angebote werden geladen …",
+    "new": "Neu",
+    "validUntil": "Gültig bis {{date}}",
+    "perUnit": "je {{unit}}",
+    "originalPriceLabel": "statt {{price}} €",
+    "viewOriginal": "Zum Angebot beim Händler",
+    "lastUpdated": "Zuletzt aktualisiert: {{date}}",
+    "refresh": "Ansicht aktualisieren"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "fontSize": "Schriftgröße",
+    "fontSizeSmall": "Klein",
+    "fontSizeNormal": "Normal",
+    "fontSizeLarge": "Groß",
+    "city": "Stadt",
+    "radius": "Umkreis"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen"
+  }
+}

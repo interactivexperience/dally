@@ -1,0 +1,96 @@
+# Sparfuchs
+
+Prospekt-Filter-Webapp: sammelt Angebote mehrerer Discounter, macht sie durchsuchbar/filterbar
+und zeigt eine „Diese Woche neu"-Startansicht. Hintergrund und Architektur-Begründungen: siehe
+[`konzept.md`](./konzept.md). Aktueller Baustand und offene TODOs: siehe [`CLAUDE.md`](./CLAUDE.md).
+
+**Phase 1 (MVP), aktueller Stand:** Datenmodell + Firestore Security Rules, Firebase-Client/-Admin-Setup,
+zwei Scraper-Module (Rewe, dm) als Proof of Concept, einfache Filter-UI (Text + Händler, ohne
+KI-Kategorisierung), Login für einen Nutzer, barrierefreies Grundlayout, UI auf Deutsch/Vietnamesisch/Englisch.
+
+## Projektstruktur
+
+```
+app/                    Vite/React PWA (Frontend, liest nur aus Firestore)
+scraper/                Node.js-Job, läuft nur in GitHub Actions bzw. lokal - nie im Browser
+firestore.rules         Security Rules
+firebase.json           Hosting- + Firestore-Config
+.github/workflows/      scrape.yml (wöchentlich + manuell), deploy.yml (Hosting bei Push)
+```
+
+## Einmaliges Setup
+
+### 1. Firebase-Projekt anlegen
+
+1. Neues Projekt in der [Firebase Console](https://console.firebase.google.com/) anlegen
+2. **Authentication** aktivieren, Anbieter **E-Mail/Passwort** einschalten
+3. **Firestore Database** anlegen (Produktionsmodus - die Regeln kommen aus `firestore.rules`)
+4. Unter Projekteinstellungen → Deine Apps → Web-App hinzufügen, die Config-Werte notieren
+5. Ersten (und für Phase 1 einzigen) Nutzer-Account manuell in der Firebase Console unter
+   Authentication → Users anlegen (E-Mail + Passwort) - es gibt bewusst noch keine
+   Selbstregistrierung in der App
+
+### 2. Firebase-Admin Service Account
+
+1. Projekteinstellungen → Dienstkonten → Neuen privaten Schlüssel generieren (JSON-Datei)
+2. **Nie committen.** Wird als GitHub-Actions-Secret hinterlegt (siehe unten) bzw. lokal in
+   `scraper/.env`
+
+### 3. Firestore Security Rules deployen
+
+```bash
+npm install -g firebase-tools
+firebase login
+firebase use <dein-projekt-id>
+firebase deploy --only firestore:rules
+```
+
+### 4. GitHub-Actions-Secrets hinterlegen
+
+Unter Repo → Settings → Secrets and variables → Actions:
+
+| Secret | Verwendet von | Inhalt |
+|---|---|---|
+| `FIREBASE_SERVICE_ACCOUNT` | scrape.yml, deploy.yml | kompletter Inhalt der Service-Account-JSON |
+| `FIREBASE_PROJECT_ID` | scrape.yml, deploy.yml | Firebase-Projekt-ID |
+| `VITE_FIREBASE_API_KEY` | deploy.yml | aus der Web-App-Config |
+| `VITE_FIREBASE_AUTH_DOMAIN` | deploy.yml | aus der Web-App-Config |
+| `VITE_FIREBASE_PROJECT_ID` | deploy.yml | aus der Web-App-Config |
+| `VITE_FIREBASE_STORAGE_BUCKET` | deploy.yml | aus der Web-App-Config |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | deploy.yml | aus der Web-App-Config |
+| `VITE_FIREBASE_APP_ID` | deploy.yml | aus der Web-App-Config |
+
+## Lokale Entwicklung
+
+```bash
+npm install                          # installiert app/ + scraper/ (npm workspaces)
+
+cp app/.env.example app/.env         # Firebase-Web-Config eintragen
+npm run dev                          # startet die App unter localhost
+
+cp scraper/.env.example scraper/.env # FIREBASE_SERVICE_ACCOUNT + FIREBASE_PROJECT_ID eintragen
+npm run scrape                       # führt den Scraping-Job einmal lokal aus
+```
+
+## Scraper: wichtige Einschränkung
+
+Die Scraper-Module in `scraper/src/discounters/` (Rewe, dm) sind ein **Proof of Concept mit
+Platzhalter-Selektoren** - sie wurden ohne Zugriff auf die aktuelle Live-Website gebaut und
+brauchen vor dem ersten echten Lauf eine Prüfung/Anpassung gegen `rewe.de` bzw. `dm.de` per
+Browser-DevTools (Selektoren sind mit `// TODO verifizieren` markiert). Das ist keine
+Nachlässigkeit, sondern folgt bewusst konzept.md Punkt 4: Discounter-Websites ändern ihr Markup
+regelmäßig, das ist laufender Wartungsaufwand, kein einmaliges Setup.
+
+Ebenso sind die Filialdaten in `scraper/config/branches.json` aktuell **ungeprüfte Platzhalter**
+(Münster-Zentrums-Koordinaten, keine echte Adresse) - vor dem ersten Lauf durch echte, verifizierte
+Filialdaten ersetzen.
+
+Scraping erfolgt sequenziell (nicht parallel) und mit moderater Frequenz (wöchentlicher Cron +
+manuelles `workflow_dispatch`), robots.txt der jeweiligen Seite sollte vor dem produktiven Einsatz
+geprüft werden - siehe konzept.md Punkt 4 zur rechtlichen Einordnung.
+
+## Was fehlt bewusst noch (Phase 2+)
+
+Siehe konzept.md Punkt 15 für den vollständigen Phasenplan. Nicht Teil von Phase 1:
+Gemini-Kategorisierung/Themen-Filter, mehrere Nutzer-Accounts, mehrere Filialen pro Discounter,
+echter Aktualisieren-Button (Cloudflare Worker), Umkreissuche mit Haversine, Push-Benachrichtigungen.

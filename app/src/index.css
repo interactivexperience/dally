@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Barrierefreiheit (konzept.md Punkt 13): große Schrift als Standard,
+   dazu eine per Nutzerprofil einstellbare Schriftgröße. Alles in rem,
+   damit die Einstellung konsequent durchschlägt. */
+html {
+  font-size: 18px; /* normal, Standard */
+}
+html[data-font-size='klein'] {
+  font-size: 16px;
+}
+html[data-font-size='gross'] {
+  font-size: 22px;
+}
+
+body {
+  @apply bg-paper text-ink;
+}
+
+/* Klare Fokus-Sichtbarkeit für Tastatur-Bedienung, kein "outline: none" ohne Ersatz. */
+:focus-visible {
+  outline: 3px solid theme('colors.accent');
+  outline-offset: 2px;
+}

@@ -1,0 +1,50 @@
+{
+  "app": {
+    "name": "Sparfuchs",
+    "tagline": "Tất cả ưu đãi ở một nơi"
+  },
+  "nav": {
+    "offers": "Ưu đãi",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "email": "Địa chỉ email",
+    "password": "Mật khẩu",
+    "submit": "Đăng nhập",
+    "loading": "Đang đăng nhập …",
+    "error": "Đăng nhập thất bại. Vui lòng kiểm tra email và mật khẩu."
+  },
+  "offers": {
+    "title": "Ưu đãi",
+    "newThisWeek": "Mới trong tuần này",
+    "searchLabel": "Tìm kiếm ưu đãi",
+    "searchPlaceholder": "vd: bơ, tã, táo …",
+    "discounterLabel": "Cửa hàng",
+    "allDiscounters": "Tất cả cửa hàng",
+    "empty": "Không tìm thấy ưu đãi nào. Hãy thử từ khóa hoặc cửa hàng khác.",
+    "loading": "Đang tải ưu đãi …",
+    "new": "Mới",
+    "validUntil": "Có hiệu lực đến {{date}}",
+    "perUnit": "mỗi {{unit}}",
+    "originalPriceLabel": "thay vì {{price}} €",
+    "viewOriginal": "Xem ưu đãi tại cửa hàng",
+    "lastUpdated": "Cập nhật lần cuối: {{date}}",
+    "refresh": "Làm mới danh sách"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "language": "Ngôn ngữ",
+    "fontSize": "Cỡ chữ",
+    "fontSizeSmall": "Nhỏ",
+    "fontSizeNormal": "Bình thường",
+    "fontSizeLarge": "Lớn",
+    "city": "Thành phố",
+    "radius": "Bán kính"
+  },
+  "common": {
+    "save": "Lưu",
+    "cancel": "Hủy"
+  }
+}

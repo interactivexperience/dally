@@ -1,0 +1,14 @@
+{
+  "name": "sparfuchs",
+  "private": true,
+  "workspaces": [
+    "app",
+    "scraper"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w app",
+    "build": "npm run build -w app",
+    "lint": "npm run lint -w app",
+    "scrape": "npm run start -w scraper"
+  }
+}

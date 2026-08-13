@@ -1,0 +1,29 @@
+{
+  "_hinweis": "TODO (siehe CLAUDE.md): Platzhalter-Filialen für Münster. adresse/plz/lat/lon sind ungeprüfte Näherungswerte (Münster-Zentrum) - vor dem ersten echten Scraping-Lauf durch echte, verifizierte Filialdaten ersetzen. sucheParam ist der Parameter, den der jeweilige Scraper zur Marktauswahl auf der Händler-Website braucht (z. B. PLZ oder Markt-ID) und muss ebenfalls verifiziert werden.",
+  "branches": [
+    {
+      "id": "rewe-muenster-zentrum",
+      "discounterId": "rewe",
+      "name": "REWE Münster Zentrum (Platzhalter)",
+      "adresse": "TODO: echte Adresse eintragen",
+      "plz": "48143",
+      "ort": "Münster",
+      "lat": 51.9607,
+      "lon": 7.6261,
+      "sucheParam": "48143",
+      "verifiziert": false
+    },
+    {
+      "id": "dm-muenster-zentrum",
+      "discounterId": "dm",
+      "name": "dm Münster Zentrum (Platzhalter)",
+      "adresse": "TODO: echte Adresse eintragen",
+      "plz": "48143",
+      "ort": "Münster",
+      "lat": 51.9607,
+      "lon": 7.6261,
+      "sucheParam": "48143",
+      "verifiziert": false
+    }
+  ]
+}

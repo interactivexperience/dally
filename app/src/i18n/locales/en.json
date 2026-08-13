@@ -1,0 +1,50 @@
+{
+  "app": {
+    "name": "Sparfuchs",
+    "tagline": "All offers in one place"
+  },
+  "nav": {
+    "offers": "Offers",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "login": {
+    "title": "Log in",
+    "email": "Email address",
+    "password": "Password",
+    "submit": "Log in",
+    "loading": "Logging in …",
+    "error": "Login failed. Please check your email and password."
+  },
+  "offers": {
+    "title": "Offers",
+    "newThisWeek": "New this week",
+    "searchLabel": "Search offers",
+    "searchPlaceholder": "e.g. butter, diapers, apple …",
+    "discounterLabel": "Store",
+    "allDiscounters": "All stores",
+    "empty": "No offers found. Try a different search term or store.",
+    "loading": "Loading offers …",
+    "new": "New",
+    "validUntil": "Valid until {{date}}",
+    "perUnit": "per {{unit}}",
+    "originalPriceLabel": "was {{price}} €",
+    "viewOriginal": "View offer at store",
+    "lastUpdated": "Last updated: {{date}}",
+    "refresh": "Refresh view"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "fontSize": "Font size",
+    "fontSizeSmall": "Small",
+    "fontSizeNormal": "Normal",
+    "fontSizeLarge": "Large",
+    "city": "City",
+    "radius": "Radius"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}

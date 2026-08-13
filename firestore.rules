@@ -1,0 +1,35 @@
+rules_version = '2';
+
+// Sicherheitsmodell (siehe konzept.md Punkt 6):
+// - Jeder Nutzer darf nur sein eigenes users/{uid}-Dokument lesen/schreiben.
+// - offers/branches/discounters/scrapeStatus sind für eingeloggte Nutzer read-only.
+//   Geschrieben wird dort ausschließlich vom Scraping-Job über das Firebase-Admin-SDK,
+//   das Security Rules grundsätzlich umgeht — die "write: if false" hier verhindert
+//   also nur Schreibzugriffe aus dem Client, nicht den Scraper.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /discounters/{discounterId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /branches/{branchId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /offers/{offerId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /scrapeStatus/{discounterId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+  }
+}
