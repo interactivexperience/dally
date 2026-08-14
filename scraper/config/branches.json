@@ -1,17 +1,18 @@
 {
-  "_hinweis": "TODO (siehe CLAUDE.md): Platzhalter-Filialen für Münster. adresse/plz/lat/lon sind ungeprüfte Näherungswerte (Münster-Zentrum) - vor dem ersten echten Scraping-Lauf durch echte, verifizierte Filialdaten ersetzen. sucheParam ist der Parameter, den der jeweilige Scraper zur Marktauswahl auf der Händler-Website braucht (z. B. PLZ oder Markt-ID) und muss ebenfalls verifiziert werden.",
+  "_hinweis": "TODO (siehe CLAUDE.md): dm-Filiale ist noch Platzhalter. sucheParam ist der Parameter, den der jeweilige Scraper zur Marktauswahl auf der Händler-Website braucht (bei REWE: kompletter URL-Pfad nach /angebote/, bei dm bisher nur vermutet: PLZ) - siehe die jeweiligen Scraper-Module in src/discounters/ für Details.",
   "branches": [
     {
-      "id": "rewe-muenster-zentrum",
+      "id": "rewe-wolbecker-str-44",
       "discounterId": "rewe",
-      "name": "REWE Münster Zentrum (Platzhalter)",
-      "adresse": "TODO: echte Adresse eintragen",
-      "plz": "48143",
+      "name": "REWE Markt Wolbecker Str. 44",
+      "adresse": "Wolbecker Str. 44",
+      "plz": "TODO: PLZ prüfen (Google Maps o.ä.)",
       "ort": "Münster",
-      "lat": 51.9607,
-      "lon": 7.6261,
-      "sucheParam": "48143",
-      "verifiziert": false
+      "lat": null,
+      "lon": null,
+      "sucheParam": "muenster-centrum/1940225/rewe-markt-wolbecker-str-44",
+      "verifiziert": true,
+      "_hinweis": "URL/Markt-ID + Angebotskarten-Selektoren am 14.08.2026 gegen die echte Seite verifiziert (siehe rewe.js). PLZ und lat/lon fehlen noch."
     },
     {
       "id": "dm-muenster-zentrum",
