@@ -1,5 +1,5 @@
 {
-  "_hinweis": "TODO (siehe CLAUDE.md): dm-Filiale ist noch Platzhalter. sucheParam ist der Parameter, den der jeweilige Scraper zur Marktauswahl auf der Händler-Website braucht (bei REWE: kompletter URL-Pfad nach /angebote/, bei dm bisher nur vermutet: PLZ) - siehe die jeweiligen Scraper-Module in src/discounters/ für Details.",
+  "_hinweis": "TODO (siehe CLAUDE.md): Nur die REWE-Filiale ist vollständig verifiziert. Alle anderen Einträge sind unverifizierte Platzhalter (Münster-Zentrums-Koordinaten statt echter Adressen) - vor dem ersten echten Lauf des jeweiligen Scrapers durch echte Filialdaten ersetzen. sucheParam bedeutet je Discounter etwas anderes, siehe das jeweilige Modul in src/discounters/: bei REWE der komplette URL-Pfad nach /angebote/, bei dm ungenutzt (Aktionsseite ist nicht filialspezifisch), bei den übrigen bisher nur vermutet (meist PLZ).",
   "branches": [
     {
       "id": "rewe-wolbecker-str-44",
@@ -18,6 +18,67 @@
       "id": "dm-muenster-zentrum",
       "discounterId": "dm",
       "name": "dm Münster Zentrum (Platzhalter)",
+      "adresse": "TODO: echte Adresse eintragen",
+      "plz": "48143",
+      "ort": "Münster",
+      "lat": 51.9607,
+      "lon": 7.6261,
+      "sucheParam": null,
+      "verifiziert": true,
+      "_hinweis": "Teaser-Kachel-Selektoren am 14.08.2026 verifiziert (siehe dm.js), Angebote sind Info-Kacheln ohne Preis, nicht filialspezifisch - sucheParam wird vom Scraper nicht benutzt. adresse/plz/lat/lon sind aber noch Platzhalter, nur für die Anzeige in der App relevant."
+    },
+    {
+      "id": "netto-muenster-zentrum",
+      "discounterId": "netto",
+      "name": "Netto Münster Zentrum (Platzhalter)",
+      "adresse": "TODO: echte Adresse eintragen",
+      "plz": "48143",
+      "ort": "Münster",
+      "lat": 51.9607,
+      "lon": 7.6261,
+      "sucheParam": "48143",
+      "verifiziert": false
+    },
+    {
+      "id": "edeka-muenster-zentrum",
+      "discounterId": "edeka",
+      "name": "Edeka Münster Zentrum (Platzhalter)",
+      "adresse": "TODO: echte Adresse eintragen",
+      "plz": "48143",
+      "ort": "Münster",
+      "lat": 51.9607,
+      "lon": 7.6261,
+      "sucheParam": "48143",
+      "verifiziert": false
+    },
+    {
+      "id": "penny-muenster-zentrum",
+      "discounterId": "penny",
+      "name": "Penny Münster Zentrum (Platzhalter)",
+      "adresse": "TODO: echte Adresse eintragen",
+      "plz": "48143",
+      "ort": "Münster",
+      "lat": 51.9607,
+      "lon": 7.6261,
+      "sucheParam": "48143",
+      "verifiziert": false
+    },
+    {
+      "id": "lidl-muenster-zentrum",
+      "discounterId": "lidl",
+      "name": "Lidl Münster Zentrum (Platzhalter)",
+      "adresse": "TODO: echte Adresse eintragen",
+      "plz": "48143",
+      "ort": "Münster",
+      "lat": 51.9607,
+      "lon": 7.6261,
+      "sucheParam": "48143",
+      "verifiziert": false
+    },
+    {
+      "id": "rossmann-muenster-zentrum",
+      "discounterId": "rossmann",
+      "name": "Rossmann Münster Zentrum (Platzhalter)",
       "adresse": "TODO: echte Adresse eintragen",
       "plz": "48143",
       "ort": "Münster",

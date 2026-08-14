@@ -3,72 +3,57 @@ import { withPage } from '../lib/browser.js'
 /**
  * dm-Scraper (Proof of Concept, Phase 1).
  *
- * Produktkarten-Struktur verifiziert (14.08.2026, echte Karte von dm.de):
- *   <div data-dmid="product-tile" data-dan="<produkt-id>">
- *     <a href="/p/d/<id>/<slug>"><img data-dmid="product-image-container" src="..."></a>
- *     <div data-dmid="product-description">
- *       <span data-dmid="product-brand">MARKE</span>
- *       <a href="/p/d/<id>/<slug>">Produktname</a>
- *     </div>
- *     <ins data-dmid="price-localized">1,55&nbsp;€</ins>
- *     <del data-dmid="price-sellout">2,45&nbsp;€</del>
- *     <div data-dmid="price-infos"><span>60 St (0,03 € je 1 St)</span></div>
- *   </div>
- * WICHTIG: [data-dmid="product-tile"] ist eine generische Produktkarte, die dm
- * für JEDES Produkt verwendet (Suche, Kategorien, Angebote) - nicht nur für
- * Angebote. Nur Karten mit einem [data-dmid="price-sellout"]-Element (alter,
- * durchgestrichener Preis) sind wirklich reduziert; alle anderen werden unten
- * bewusst rausgefiltert, sonst landen normal bepreiste Produkte in der App.
+ * Bewusst reduzierter Umfang: dm.de hat keine flache "Produkt X kostet Y €"-
+ * Angebotsseite wie REWE. Die Seite https://www.dm.de/neu/aktionen zeigt
+ * stattdessen ein Raster aus Marketing-Kampagnen-Kacheln (z. B. "Viss- oder
+ * Domestos-Produkt bis 31.08. geschenkt"), die auf eigene Kampagnen-
+ * Unterseiten verlinken - meist ohne einen einzelnen, klaren Produktpreis
+ * (z. B. "2 kaufen, 1 geschenkt"). Für Phase 1 werden diese Kacheln deshalb
+ * nur als Info-Angebote ohne Preis übernommen (preis/alterPreis bleiben
+ * leer) - kein Produktvergleich, nur "es gibt gerade diese Aktion bei dm".
+ * Echte Preis-Angebote pro Kampagne wären ein deutlich größerer Umbau (jede
+ * Kampagnen-Unterseite einzeln auswerten, siehe konzept.md-Notiz dazu).
  *
- * URL-Herkunft (14.08.2026): Die Beispielkarte stammt von
- *   https://www.dm.de/search?query=angebote&searchProviderType=dm-products
- * also einer normalen Produktsuche nach dem Wort "Angebote" - KEINE
- * dedizierte Wochenangebote-/Prospekt-Seite. Das ist fürs Datenmodell aus
- * konzept.md problematisch: die Suche ist nicht filial-/PLZ-spezifisch (kein
- * erkennbarer Store-Parameter in der URL) und "alle reduzierten Produkte, die
- * zum Suchwort 'Angebote' passen" ist etwas anderes als "der aktuelle
- * Wochenprospekt dieser Filiale". branchConfig.sucheParam als Filial-/PLZ-
- * Parameter ist deshalb weiterhin unbestätigt - fraglich, ob dm.de für den
- * gewählten Markt überhaupt anders filterbare Angebote anzeigt, oder ob dafür
- * eine andere, noch nicht gefundene Seite nötig ist. Vor dem ersten echten
- * Lauf klären, ob es eine echte filialbezogene Angebotsseite gibt.
- * TODO: gueltigVon/gueltigBis nicht auf der Karte vorhanden, Quelle unbekannt.
+ * Teaser-Kachel-Struktur verifiziert (14.08.2026, echte Kachel von
+ * dm.de/neu/aktionen):
+ *   <div data-dmid="teaser">
+ *     <a aria-label="Viss- oder Domestos-Produkt bis 31.08. geschenkt" href="/neu/aktionen/...">
+ *       <img src="...">
+ *     </a>
+ *   </div>
+ *
+ * Bisher NICHT verifiziert: ob dm.de/neu/aktionen filial-/PLZ-spezifisch
+ * ist. Marketing-Kampagnen sind typischerweise bundesweit einheitlich -
+ * branchConfig wird deshalb nur für die branchIds-Zuordnung im Datenmodell
+ * verwendet, nicht für die URL. Falls sich dm.de doch filialspezifisch
+ * verhält, muss das hier nachgezogen werden.
  */
 export const id = 'dm'
 export const name = 'dm'
 
-export async function scrape(branchConfig) {
-  const url = `https://www.dm.de/search?query=angebote&searchProviderType=dm-products&marketNumber=${encodeURIComponent(branchConfig.sucheParam)}` // TODO: marketNumber-Parametername unbestätigt geraten
+const AKTIONEN_URL = 'https://www.dm.de/neu/aktionen'
 
-  return withPage(url, async (page) => {
-    const kartenSelektor = '[data-dmid="product-tile"]'
+// eslint-disable-next-line no-unused-vars
+export async function scrape(branchConfig) {
+  return withPage(AKTIONEN_URL, async (page) => {
+    const kartenSelektor = '[data-dmid="teaser"]'
 
     await page.waitForSelector(kartenSelektor, { timeout: 15_000 }).catch(() => {})
 
     const rohangebote = await page.$$eval(kartenSelektor, (karten) =>
-      karten
-        // Nur echte Angebote: Karten ohne durchgestrichenen Vorher-Preis sind
-        // regulär bepreiste Produkte, keine Angebote.
-        .filter((karte) => karte.querySelector('[data-dmid="price-sellout"]'))
-        .map((karte) => ({
-          titel:
-            karte.querySelector('[data-dmid="product-description"] a')?.textContent?.trim() ||
-            '',
-          beschreibung: karte.querySelector('[data-dmid="product-brand"]')?.textContent?.trim() || '',
-          preisText: karte.querySelector('[data-dmid="price-localized"]')?.textContent?.trim() || '',
-          alterPreisText:
-            karte.querySelector('[data-dmid="price-sellout"]')?.textContent?.trim() || '',
-          einheit: karte.querySelector('[data-dmid="price-infos"]')?.textContent?.trim() || '',
-          bildUrl:
-            karte.querySelector('[data-dmid="product-image-container"]')?.getAttribute('src') ||
-            null,
-        })),
+      karten.map((karte) => {
+        const link = karte.querySelector('a[aria-label]')
+        return {
+          titel: link?.getAttribute('aria-label')?.trim() || link?.textContent?.trim() || '',
+          bildUrl: karte.querySelector('img')?.getAttribute('src') || null,
+        }
+      }),
     )
 
     if (rohangebote.length === 0) {
       throw new Error(
-        `Keine Angebote gefunden - Selektor "${kartenSelektor}" liefert nichts (oder keine ` +
-          'reduzierten Karten dabei). Markup vermutlich geändert, Scraper muss angepasst werden.',
+        `Keine Aktionen gefunden - Selektor "${kartenSelektor}" liefert nichts. ` +
+          'Markup vermutlich geändert, Scraper muss angepasst werden.',
       )
     }
 
@@ -76,20 +61,13 @@ export async function scrape(branchConfig) {
       .filter((o) => o.titel)
       .map((o) => ({
         titel: o.titel,
-        beschreibung: o.beschreibung,
-        preis: parsePreis(o.preisText),
-        alterPreis: parsePreis(o.alterPreisText),
-        einheit: o.einheit || null,
-        gueltigVon: null, // TODO: Quelle für Gültigkeitszeitraum noch unbekannt
-        gueltigBis: null,
+        beschreibung: '',
+        preis: null,
+        alterPreis: null,
+        einheit: null,
+        gueltigVon: null,
+        gueltigBis: null, // TODO: manche Titel enthalten ein Datum im Text (z. B. "bis 31.08.") - bisher nicht geparst
         bildUrl: o.bildUrl,
       }))
   })
-}
-
-function parsePreis(text) {
-  if (!text) return null
-  const bereinigt = text.replace(/[^\d,.-]/g, '').replace(',', '.')
-  const wert = parseFloat(bereinigt)
-  return Number.isFinite(wert) ? wert : null
 }
