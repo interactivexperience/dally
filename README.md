@@ -14,8 +14,8 @@ KI-Kategorisierung), Login für einen Nutzer, barrierefreies Grundlayout, UI auf
 app/                    Vite/React PWA (Frontend, liest nur aus Firestore)
 scraper/                Node.js-Job, läuft nur in GitHub Actions bzw. lokal - nie im Browser
 firestore.rules         Security Rules
-firebase.json           Hosting- + Firestore-Config
-.github/workflows/      scrape.yml (wöchentlich + manuell), deploy.yml (Hosting bei Push)
+firebase.json           Firestore-Config (Rules-Deploy)
+.github/workflows/      scrape.yml (wöchentlich + manuell), deploy.yml (GitHub Pages bei Push)
 ```
 
 ## Einmaliges Setup
@@ -45,20 +45,28 @@ firebase use <dein-projekt-id>
 firebase deploy --only firestore:rules
 ```
 
-### 4. GitHub-Actions-Secrets hinterlegen
+### 4. GitHub Pages aktivieren
+
+Repo → Settings → Pages → **Source: GitHub Actions** (einmalig, sonst deployt `deploy.yml` ins Leere).
+Die App landet danach unter `https://interactivexperience.github.io/dally/`.
+
+### 5. GitHub-Actions-Secrets hinterlegen
 
 Unter Repo → Settings → Secrets and variables → Actions:
 
 | Secret | Verwendet von | Inhalt |
 |---|---|---|
-| `FIREBASE_SERVICE_ACCOUNT` | scrape.yml, deploy.yml | kompletter Inhalt der Service-Account-JSON |
-| `FIREBASE_PROJECT_ID` | scrape.yml, deploy.yml | Firebase-Projekt-ID |
+| `FIREBASE_SERVICE_ACCOUNT` | scrape.yml | kompletter Inhalt der Service-Account-JSON |
+| `FIREBASE_PROJECT_ID` | scrape.yml | Firebase-Projekt-ID |
 | `VITE_FIREBASE_API_KEY` | deploy.yml | aus der Web-App-Config |
 | `VITE_FIREBASE_AUTH_DOMAIN` | deploy.yml | aus der Web-App-Config |
 | `VITE_FIREBASE_PROJECT_ID` | deploy.yml | aus der Web-App-Config |
 | `VITE_FIREBASE_STORAGE_BUCKET` | deploy.yml | aus der Web-App-Config |
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | deploy.yml | aus der Web-App-Config |
 | `VITE_FIREBASE_APP_ID` | deploy.yml | aus der Web-App-Config |
+
+`FIREBASE_SERVICE_ACCOUNT`/`FIREBASE_PROJECT_ID` werden nur vom Scraping-Job gebraucht, nicht mehr
+fürs Deployment - die App liegt jetzt auf GitHub Pages statt Firebase Hosting.
 
 ## Lokale Entwicklung
 

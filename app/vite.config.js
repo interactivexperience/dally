@@ -2,7 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// Deployment-Ziel ist GitHub Pages als Projekt-Seite (nicht <user>.github.io),
+// die App liegt also unter /dally/ statt am Domain-Root - base/start_url/scope
+// müssen das widerspiegeln, sonst brechen Assets + Client-Routing nach dem Deploy.
+const BASE_PATH = '/dally/'
+
 export default defineConfig({
+  base: BASE_PATH,
   plugins: [
     react(),
     VitePWA({
@@ -15,7 +21,8 @@ export default defineConfig({
         theme_color: '#1C1B1A',
         background_color: '#1C1B1A',
         display: 'standalone',
-        start_url: '/',
+        start_url: BASE_PATH,
+        scope: BASE_PATH,
       },
       // TODO: App-Icons (192x192, 512x512) ergänzen, sobald ein Icon-Design steht.
       workbox: {

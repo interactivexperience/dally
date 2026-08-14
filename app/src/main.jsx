@@ -8,7 +8,8 @@ import App from './App.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    {/* Projekt-Seite auf GitHub Pages liegt unter /dally/, siehe vite.config.js */}
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <App />
       </AuthProvider>

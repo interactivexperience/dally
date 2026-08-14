@@ -4,7 +4,8 @@ Vollständiges Konzept mit Architektur-Begründungen: **konzept.md** — bei Unk
 
 ## Tech-Stack
 - Frontend: Vite + React (PWA), Tailwind — `app/`
-- Backend/Daten: Firebase Auth (E-Mail/Passwort) + Firestore, Hosting via Firebase Hosting oder GitHub Pages
+- Backend/Daten: Firebase Auth (E-Mail/Passwort) + Firestore
+- Hosting: GitHub Pages (Projekt-Seite unter `/dally/`, Deploy via `actions/deploy-pages`)
 - Scraping: Node.js + Playwright/Cheerio, ausgeführt als GitHub-Actions-Cron-Job (wöchentlich + manuell auslösbar) — `scraper/`
 - KI: Gemini API (Kategorisierung der Angebote im Scraping-Job, serverseitig) — **Phase 2**, in Phase 1 noch nicht integriert
 - Trigger für manuelles Aktualisieren: Cloudflare Worker (kein Firebase Blaze/Billing-Konto nötig) — **Phase 3**
@@ -22,8 +23,8 @@ Vollständiges Konzept mit Architektur-Begründungen: **konzept.md** — bei Unk
 app/                    Vite/React PWA (Frontend)
 scraper/                Node.js Scraping-Job (läuft nur in GitHub Actions, nie im Client)
 firestore.rules         Security Rules (siehe konzept.md Punkt 6)
-firebase.json           Hosting- + Firestore-Config
-.github/workflows/      scrape.yml (Cron + manuell), deploy.yml (Hosting)
+firebase.json           Firestore-Config (Rules-Deploy)
+.github/workflows/      scrape.yml (Cron + manuell), deploy.yml (GitHub Pages)
 ```
 
 ## Aktueller Stand
@@ -38,6 +39,7 @@ firebase.json           Hosting- + Firestore-Config
 ## Offene TODOs (menschliches Zutun nötig, kann Claude nicht selbst erledigen)
 - Firebase-Projekt anlegen (Auth E-Mail/Passwort aktivieren, Firestore anlegen), Web-App-Config in `app/.env` eintragen
 - Firebase-Admin Service-Account-Key erzeugen, als GitHub-Actions-Secret `FIREBASE_SERVICE_ACCOUNT` hinterlegen
+- GitHub Pages aktivieren: Repo → Settings → Pages → Source: GitHub Actions
 - CSS-Selektoren in `scraper/src/discounters/rewe.js` und `dm.js` gegen die aktuelle Live-Website prüfen/anpassen (Selektoren sind Platzhalter, Seiten sind JS-gerendert und ändern sich regelmäßig — siehe konzept.md Punkt 4)
 - Erste Filialen für Münster in `scraper/config/branches.json` mit echten Adressen/Koordinaten ergänzen
 - Gemini-API-Key besorgen (Phase 2, noch nicht benötigt)
