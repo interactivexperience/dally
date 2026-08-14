@@ -5,14 +5,14 @@
       "id": "rewe-wolbecker-str-44",
       "discounterId": "rewe",
       "name": "REWE Markt Wolbecker Str. 44",
-      "adresse": "Wolbecker Str. 44",
-      "plz": "TODO: PLZ prüfen (Google Maps o.ä.)",
+      "adresse": "Wolbeckerstraße 44",
+      "plz": "48145",
       "ort": "Münster",
       "lat": null,
       "lon": null,
       "sucheParam": "muenster-centrum/1940225/rewe-markt-wolbecker-str-44",
       "verifiziert": true,
-      "_hinweis": "URL/Markt-ID + Angebotskarten-Selektoren am 14.08.2026 gegen die echte Seite verifiziert (siehe rewe.js). PLZ und lat/lon fehlen noch."
+      "_hinweis": "URL/Markt-ID + Angebotskarten-Selektoren am 14.08.2026 gegen die echte Seite verifiziert (siehe rewe.js). lat/lon fehlen noch - für Phase 1 unkritisch, da die Umkreissuche laut konzept.md Punkt 15 erst in Phase 3 implementiert wird."
     },
     {
       "id": "dm-muenster-zentrum",
