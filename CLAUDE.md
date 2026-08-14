@@ -28,20 +28,42 @@ firebase.json           Firestore-Config (Rules-Deploy)
 ```
 
 ## Aktueller Stand
-- Phase: **1 (MVP)** — Grundgerüst steht
+- Phase: **1 (MVP)** — Grundgerüst steht, Scraper-Abdeckung geht schon über den ursprünglichen
+  Phase-1-Scope (Rewe+dm als PoC) hinaus: alle 7 MVP-Discounter aus konzept.md Punkt 1 sind als
+  Modul angelegt, Verifizierungsstand ist aber sehr unterschiedlich (siehe unten)
   - Datenmodell + Firestore Security Rules angelegt
   - Firebase-Setup (Client-SDK + Admin-SDK) vorbereitet, wartet auf echtes Firebase-Projekt (Punkt "Offene TODOs" unten)
-  - Scraper-Grundgerüst mit gemeinsamer Schnittstelle `scrape(branchConfig) → Offer[]`, Module für Rewe und dm (Playwright) als Proof of Concept
+  - Scraper-Grundgerüst mit gemeinsamer Schnittstelle `scrape(branchConfig) → Offer[]`,
+    fehlertolerante Orchestrierung (ein kaputtes Modul blockiert die anderen nicht)
   - Einfache Filter-UI (Text-Suche + Discounter-Filter, ohne Themen-KI/Gemini — folgt Phase 2)
   - Ein Nutzer (Login), barrierefreies Grundlayout, UI dreisprachig (DE/VI/EN)
-- Nächster Schritt: echtes Firebase-Projekt anlegen, Scraper-Selektoren gegen die Live-Websites verifizieren (siehe TODOs in `scraper/src/discounters/*.js`), erste echte Daten scrapen
+- **Scraper-Verifizierungsstand pro Discounter** (`scraper/src/discounters/*.js`):
+  - ✅ `rewe.js` — gegen echte Angebotsseite verifiziert (REWE Markt Wolbeckerstraße 44, Münster), funktioniert
+  - ⚠️ `dm.js` — verifiziert, aber bewusst reduzierter Umfang: dm.de hat keine Preis-Angebotsseite wie
+    REWE, nur Marketing-Kampagnen-Kacheln (`/neu/aktionen`) ohne Produktpreis. Übernommen als
+    Info-Angebote ohne `preis`/`alterPreis`
+  - ❌ `netto.js`, `edeka.js`, `penny.js`, `lidl.js`, `rossmann.js` — **unverifizierte Platzhalter**,
+    URL + Selektoren sind geraten (nach demselben Muster wie rewe.js/dm.js vor ihrer Verifizierung).
+    Schlagen aktuell zuverlässig mit einer klaren Fehlermeldung fehl statt falsche Daten zu liefern
+    (Fehlertoleranz greift, `scrapeStatus` zeigt das in der App an) - liefern aber noch keine echten
+    Angebote. Bei `netto.js` zusätzlich ungeklärt: "Netto" ist doppelt vergeben (Netto Marken-Discount
+    vs. Netto/Edeka) - muss vor dem Verifizieren geklärt werden. Bei `lidl.js`: möglich, dass Lidl
+    Angebote nur als Blätterkatalog/Bildprospekt zeigt, nicht als normales HTML - dann bräuchte es
+    einen anderen Ansatz als CSS-Selektoren.
+- Nächster Schritt: echtes Firebase-Projekt anlegen, die fünf offenen Scraper nach und nach
+  verifizieren (siehe Verifizierungs-Ablauf in `rewe.js`: echte HTML-Schnipsel einer Angebotskarte +
+  der Marktauswahl liefern lassen, dann Selektoren/URL entsprechend anpassen)
 
 ## Offene TODOs (menschliches Zutun nötig, kann Claude nicht selbst erledigen)
 - Firebase-Projekt anlegen (Auth E-Mail/Passwort aktivieren, Firestore anlegen), Web-App-Config in `app/.env` eintragen
 - Firebase-Admin Service-Account-Key erzeugen, als GitHub-Actions-Secret `FIREBASE_SERVICE_ACCOUNT` hinterlegen
 - GitHub Pages aktivieren: Repo → Settings → Pages → Source: GitHub Actions
-- CSS-Selektoren in `scraper/src/discounters/rewe.js` und `dm.js` gegen die aktuelle Live-Website prüfen/anpassen (Selektoren sind Platzhalter, Seiten sind JS-gerendert und ändern sich regelmäßig — siehe konzept.md Punkt 4)
-- Erste Filialen für Münster in `scraper/config/branches.json` mit echten Adressen/Koordinaten ergänzen
+- CSS-Selektoren + URLs in `netto.js`, `edeka.js`, `penny.js`, `lidl.js`, `rossmann.js` gegen die
+  jeweilige Live-Website prüfen/anpassen (Selektoren sind Platzhalter, Seiten sind JS-gerendert und
+  ändern sich regelmäßig — siehe konzept.md Punkt 4). Bei Netto vorher klären, welche der beiden
+  Ketten gemeint ist.
+- Echte Filialdaten (Adresse/PLZ/Koordinaten) für Netto, Edeka, Penny, Lidl, Rossmann und dm in
+  `scraper/config/branches.json` ergänzen (bisher nur REWE hat eine echte Adresse)
 - Gemini-API-Key besorgen (Phase 2, noch nicht benötigt)
 
 ## Befehle

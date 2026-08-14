@@ -5,7 +5,10 @@ und zeigt eine „Diese Woche neu"-Startansicht. Hintergrund und Architektur-Beg
 [`konzept.md`](./konzept.md). Aktueller Baustand und offene TODOs: siehe [`CLAUDE.md`](./CLAUDE.md).
 
 **Phase 1 (MVP), aktueller Stand:** Datenmodell + Firestore Security Rules, Firebase-Client/-Admin-Setup,
-zwei Scraper-Module (Rewe, dm) als Proof of Concept, einfache Filter-UI (Text + Händler, ohne
+Scraper-Module für alle 7 MVP-Discounter aus konzept.md (Rewe, dm, Netto, Edeka, Penny, Lidl,
+Rossmann) - davon ist aber nur **Rewe vollständig verifiziert und funktionsfähig**, dm liefert
+verifizierte Info-Kacheln ohne Preis, die übrigen fünf sind unverifizierte Platzhalter (siehe
+"Scraper: wichtige Einschränkung" unten). Dazu: einfache Filter-UI (Text + Händler, ohne
 KI-Kategorisierung), Login für einen Nutzer, barrierefreies Grundlayout, UI auf Deutsch/Vietnamesisch/Englisch.
 
 ## Projektstruktur
@@ -82,16 +85,26 @@ npm run scrape                       # führt den Scraping-Job einmal lokal aus
 
 ## Scraper: wichtige Einschränkung
 
-Die Scraper-Module in `scraper/src/discounters/` (Rewe, dm) sind ein **Proof of Concept mit
-Platzhalter-Selektoren** - sie wurden ohne Zugriff auf die aktuelle Live-Website gebaut und
-brauchen vor dem ersten echten Lauf eine Prüfung/Anpassung gegen `rewe.de` bzw. `dm.de` per
-Browser-DevTools (Selektoren sind mit `// TODO verifizieren` markiert). Das ist keine
-Nachlässigkeit, sondern folgt bewusst konzept.md Punkt 4: Discounter-Websites ändern ihr Markup
-regelmäßig, das ist laufender Wartungsaufwand, kein einmaliges Setup.
+Verifizierungsstand pro Discounter (`scraper/src/discounters/`):
 
-Ebenso sind die Filialdaten in `scraper/config/branches.json` aktuell **ungeprüfte Platzhalter**
-(Münster-Zentrums-Koordinaten, keine echte Adresse) - vor dem ersten Lauf durch echte, verifizierte
-Filialdaten ersetzen.
+| Discounter | Status |
+|---|---|
+| Rewe | ✅ funktioniert, gegen echte Angebotsseite verifiziert |
+| dm | ⚠️ funktioniert, aber nur Info-Kacheln ohne Preis (dm.de hat keine Preis-Angebotsseite wie Rewe) |
+| Netto, Edeka, Penny, Lidl, Rossmann | ❌ unverifizierte Platzhalter, URL + Selektoren sind geraten |
+
+Die fünf offenen Module wurden ohne Zugriff auf die jeweilige Live-Website gebaut und brauchen vor
+dem ersten echten Lauf eine Prüfung/Anpassung per Browser-DevTools (Selektoren sind mit
+`// TODO verifizieren` markiert, siehe auch die ausführlicheren Hinweise am Kopf jeder Datei). Das
+ist keine Nachlässigkeit, sondern folgt bewusst konzept.md Punkt 4: Discounter-Websites ändern ihr
+Markup regelmäßig, das ist laufender Wartungsaufwand, kein einmaliges Setup - Rewe und dm zeigen im
+Kommentar am Dateikopf, wie der Verifizierungs-Ablauf aussieht (echte HTML-Schnipsel einer
+Angebotskarte + der Marktauswahl besorgen, Selektoren entsprechend anpassen, mit einem kleinen
+Testskript gegenprüfen).
+
+Ebenso sind die Filialdaten in `scraper/config/branches.json` für alle Discounter außer Rewe aktuell
+**ungeprüfte Platzhalter** (Münster-Zentrums-Koordinaten, keine echte Adresse) - vor dem ersten Lauf
+durch echte, verifizierte Filialdaten ersetzen.
 
 Scraping erfolgt sequenziell (nicht parallel) und mit moderater Frequenz (wöchentlicher Cron +
 manuelles `workflow_dispatch`), robots.txt der jeweiligen Seite sollte vor dem produktiven Einsatz
