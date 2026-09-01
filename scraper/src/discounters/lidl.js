@@ -1,72 +1,113 @@
 import { withPage } from '../lib/browser.js'
 
 /**
- * Lidl-Scraper (Grundgerüst, NICHT verifiziert).
+ * Lidl-Scraper (Blätterkatalog-Bildseiten, Proof of Concept).
  *
- * TODO vor der ersten Nutzung: Selektoren UND URL sind geraten, nicht gegen
- * die echte Seite geprüft (siehe rewe.js für den Verifizierungs-Ablauf:
- * echte HTML-Schnipsel einer Angebotskarte + der Marktauswahl liefern).
+ * Struktur verifiziert (14.08.2026, echte Prospektseite):
+ *   https://www.lidl.de/l/prospekte/aktionsprospekt-<von>-<bis>-<hash>/view/flyer/page/1?...
+ * Jede Seite ist ein <li data-pageid="..." class="page page--current ..."> mit
+ * einem Bild der kompletten gescannten Prospektseite (kein Preis im HTML,
+ * nur im Bild eingebrannt) plus positionierten Hotspot-Buttons pro Produkt:
+ *   <img class="img" src="https://imgproxy.leaflets.schwarz/.../page-01_...jpg"
+ *        alt="Seite 1 - Aktionsprospekt - 31.08.2026 – 05.09.2026">
+ *   <section class="mediagroup" style="top: ...%; left: ...%; ...">
+ *     <button aria-label="PARKSIDE® 20V Akku 4 Ah »PAP 204 A1« wird in der Seitenleiste geöffnet.">
+ *   </section>
+ * Der Gültigkeitszeitraum steht zuverlässig im alt-Text der Seite - bisher
+ * einziger Discounter, bei dem sich gueltigVon/gueltigBis füllen lassen.
+ * Manche mediagroup-Sections enthalten statt eines Buttons einen <a>-Link
+ * (z. B. zu einem Rezept, aria-label "Link wird in einem neuen Fenster
+ * geöffnet.") - die werden über den `button`-Selektor unten automatisch
+ * ausgeschlossen.
  *
- * TODO wichtige Warnung VOR dem Verifizieren: Lidl zeigt Angebote vielerorts
- * als interaktiven "Prospekt"/Blätterkatalog (bildbasiert, oft über einen
- * eingebetteten Drittanbieter-Viewer statt normalem HTML), nicht zwingend
- * als einfache Kartenliste wie bei REWE. Falls das zutrifft, funktioniert
- * der CSS-Selektor-Ansatz hier vermutlich gar nicht und Lidl bräuchte einen
- * grundsätzlich anderen Ansatz (z. B. eine separate API des Viewers, falls
- * vorhanden) - das zuerst prüfen, bevor Zeit in Selektor-Feintuning geht.
+ * WICHTIGE EINSCHRÄNKUNG: kein Preis im HTML, nur im Bild eingebrannt. Die
+ * Hotspots öffnen beim Klick eine Seitenleiste, die vermutlich per AJAX den
+ * Preis nachlädt - TODO, noch nicht geprüft. Bis dahin: Angebote ohne
+ * preis/alterPreis, dafür mit dem echten Seitenbild als bildUrl.
  *
- * branchConfig.sucheParam wird vorerst als PLZ angenommen, siehe
- * scraper/config/branches.json.
+ * TODO NICHT verifiziert: wie man von der Prospekt-Übersicht
+ * (lidl.de/c/online-prospekte/...) automatisch zur aktuellen Wochen-Flyer-URL
+ * kommt - die URL enthält Datum+Hash und ändert sich jede Woche.
+ * branchConfig.sucheParam hält deshalb vorerst die komplette, von Hand
+ * ermittelte Flyer-Start-URL (page/1) - müsste künftig automatisiert werden,
+ * sonst muss branches.json jede Woche manuell aktualisiert werden.
+ * TODO NICHT verifiziert: ob der "Nächste Seite"-Button am Prospekt-Ende
+ * zuverlässig disabled/aria-disabled wird - MAX_SEITEN ist die Sicherheitsgrenze.
  */
 export const id = 'lidl'
 export const name = 'Lidl'
 
+const MAX_SEITEN = 40
+
 export async function scrape(branchConfig) {
-  const url = `https://www.lidl.de/c/angebote/${encodeURIComponent(branchConfig.sucheParam)}` // TODO verifizieren
+  const startUrl = branchConfig.sucheParam // volle Flyer-URL, siehe TODO oben
 
-  return withPage(url, async (page) => {
-    const kartenSelektor = '[data-testid="offer-tile"]' // TODO verifizieren, reine Vermutung
+  return withPage(startUrl, async (page) => {
+    const rohangebote = []
 
-    await page.waitForSelector(kartenSelektor, { timeout: 15_000 }).catch(() => {})
+    for (let i = 0; i < MAX_SEITEN; i++) {
+      await page.waitForSelector('li.page--current img.img', { timeout: 15_000 }).catch(() => {})
 
-    const rohangebote = await page.$$eval(kartenSelektor, (karten) =>
-      karten.map((karte) => ({
-        titel: karte.querySelector('[data-testid="offer-title"]')?.textContent?.trim() || '',
-        beschreibung:
-          karte.querySelector('[data-testid="offer-subtitle"]')?.textContent?.trim() || '',
-        preisText: karte.querySelector('[data-testid="offer-price"]')?.textContent?.trim() || '',
-        alterPreisText:
-          karte.querySelector('[data-testid="offer-old-price"]')?.textContent?.trim() || '',
-        einheit: karte.querySelector('[data-testid="offer-unit"]')?.textContent?.trim() || '',
-        bildUrl: karte.querySelector('img')?.getAttribute('src') || null,
-      })),
-    )
+      const seite = await page.evaluate(() => {
+        const aktuell = document.querySelector('li.page--current')
+        if (!aktuell) return null
+
+        const img = aktuell.querySelector('img.img')
+        const alt = img?.getAttribute('alt') || ''
+        const daten = alt.match(/\d{2}\.\d{2}\.\d{4}/g) || []
+
+        const titel = Array.from(aktuell.querySelectorAll('.mediagroup button[aria-label]'))
+          .map((btn) => btn.getAttribute('aria-label') || '')
+          .filter((label) => label.endsWith('wird in der Seitenleiste geöffnet.'))
+          .map((label) => label.replace(/\s*wird in der Seitenleiste geöffnet\.$/, '').trim())
+
+        return {
+          bildUrl: img?.getAttribute('src') || null,
+          gueltigVon: daten[0] || null,
+          gueltigBis: daten[1] || null,
+          titel,
+        }
+      })
+
+      if (!seite) break
+
+      for (const titel of seite.titel) {
+        rohangebote.push({
+          titel,
+          beschreibung: '',
+          preis: null,
+          alterPreis: null,
+          einheit: null,
+          gueltigVon: parseDatum(seite.gueltigVon),
+          gueltigBis: parseDatum(seite.gueltigBis),
+          bildUrl: seite.bildUrl,
+        })
+      }
+
+      const weiterButton = await page.$('button[aria-label="Nächste Seite"]')
+      if (!weiterButton) break
+      const deaktiviert = await weiterButton
+        .evaluate((el) => el.disabled || el.getAttribute('aria-disabled') === 'true')
+        .catch(() => true)
+      if (deaktiviert) break
+
+      await weiterButton.click()
+      await page.waitForTimeout(800) // Seitenwechsel/Bild-Ladezeit abwarten
+    }
 
     if (rohangebote.length === 0) {
       throw new Error(
-        `Keine Angebote gefunden - Selektor "${kartenSelektor}" liefert nichts. ` +
-          'Unverifizierter Platzhalter-Scraper, siehe TODOs oben (evtl. Blätterkatalog statt HTML-Liste).',
+        'Keine Angebote gefunden - Prospekt-Struktur vermutlich geändert oder ' +
+          'Navigation zwischen Seiten fehlgeschlagen. Siehe TODOs oben.',
       )
     }
 
     return rohangebote
-      .filter((o) => o.titel)
-      .map((o) => ({
-        titel: o.titel,
-        beschreibung: o.beschreibung,
-        preis: parsePreis(o.preisText),
-        alterPreis: parsePreis(o.alterPreisText),
-        einheit: o.einheit || null,
-        gueltigVon: null,
-        gueltigBis: null,
-        bildUrl: o.bildUrl,
-      }))
   })
 }
 
-function parsePreis(text) {
-  if (!text) return null
-  const bereinigt = text.replace(/[^\d,.-]/g, '').replace(',', '.')
-  const wert = parseFloat(bereinigt)
-  return Number.isFinite(wert) ? wert : null
+function parseDatum(ddmmyyyy) {
+  if (!ddmmyyyy) return null
+  const [tag, monat, jahr] = ddmmyyyy.split('.')
+  return `${jahr}-${monat}-${tag}` // ISO-Datum (YYYY-MM-DD)
 }
