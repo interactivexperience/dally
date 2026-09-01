@@ -51,15 +51,23 @@ firebase.json           Firestore-Config (Rules-Deploy)
     Prospekt-Übersichtsseite gefunden - kein manuelles wöchentliches URL-Update nötig. Die Hotspots
     öffnen beim Klick eine Seitenleiste, die vermutlich per AJAX den Preis nachlädt - noch nicht
     geprüft, wäre der Weg zu echten Preisen
-  - ❌ `netto.js`, `edeka.js`, `penny.js`, `rossmann.js`, `aldi.js` — **unverifizierte Platzhalter**,
+  - ⚠️ `netto.js` — verifiziert, gemeint ist **Netto Marken-Discount** (schwarz-gelb, nicht das zu
+    Edeka gehörende rot-gelbe Netto - das war zwischenzeitlich falsch angenommen). Zweistufig: die
+    aktuelle Wochen-Flyer-URL wird automatisch von der Prospekt-Übersichtsseite gelesen (Ausgabe-Code
+    ändert sich wöchentlich), dann wird die Publitas-Blätteransicht seitenweise durchgegangen. Noch
+    reduzierter als Lidl: hier gibt es NICHT einmal Produktnamen pro Hotspot (nur generisches
+    "Mehr Infos", echter Link erst per Klick/AJAX), nur einen großen unstrukturierten OCR-Text pro
+    Seite. Nutzerentscheidung: jede Prospektseite wird als EIN Angebot übernommen (Titel "Netto
+    Angebote - Seite N", Seitenbild als `bildUrl`, roher OCR-Text als `beschreibung` fürs
+    Durchsuchen, Gültigkeitszeitraum aus dem OCR-Text geparst wo vorhanden) - kein Versuch, einzelne
+    Produkte/Preise herauszulösen
+  - ❌ `edeka.js`, `penny.js`, `rossmann.js`, `aldi.js` — **unverifizierte Platzhalter**,
     URL + Selektoren sind geraten (nach demselben Muster wie rewe.js/dm.js vor ihrer Verifizierung).
     Schlagen aktuell zuverlässig mit einer klaren Fehlermeldung fehl statt falsche Daten zu liefern
     (Fehlertoleranz greift, `scrapeStatus` zeigt das in der App an) - liefern aber noch keine echten
-    Angebote. Bei `netto.js` immerhin geklärt: gemeint ist das rot-gelbe, zu Edeka gehörende Netto
-    (nicht Netto Marken-Discount) - URL selbst aber weiter unverifiziert. Aldi Nord ist eine
-    Ergänzung über konzept.md hinaus.
-- Nächster Schritt: echtes Firebase-Projekt anlegen, die vier offenen Scraper (Netto, Edeka, Penny,
-  Rossmann) plus Aldi Nord nach und nach verifizieren (siehe Verifizierungs-Ablauf in `rewe.js`: echte
+    Angebote. Aldi Nord ist eine Ergänzung über konzept.md hinaus.
+- Nächster Schritt: echtes Firebase-Projekt anlegen, die drei offenen Scraper (Edeka, Penny, Rossmann)
+  plus Aldi Nord nach und nach verifizieren (siehe Verifizierungs-Ablauf in `rewe.js`: echte
   HTML-Schnipsel einer Angebotskarte + der Marktauswahl liefern lassen, dann Selektoren/URL
   entsprechend anpassen). Bei Lidl optional noch prüfen, ob sich über die Hotspot-Seitenleiste echte
   Preise nachladen lassen.

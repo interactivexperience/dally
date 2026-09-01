@@ -37,8 +37,8 @@
       "lat": null,
       "lon": null,
       "sucheParam": "6199",
-      "verifiziert": false,
-      "_hinweis": "Adresse/PLZ/storeid echt (aus dem Seitenheader von netto-online.de), Schritt 1 (Prospekt-URL finden) in netto.js verifiziert. Schritt 2 (Angebotskarten selbst) noch NICHT verifiziert, siehe TODO in netto.js. lat/lon fehlen noch."
+      "verifiziert": true,
+      "_hinweis": "Adresse/PLZ/storeid echt, beide Schritte (Prospekt-URL finden + Publitas-Blätteransicht durchblättern) am 14.08.2026 verifiziert (siehe netto.js). Angebote sind ganze Prospektseiten (Titel + Seitenbild + roher OCR-Text als beschreibung), keine einzelnen Produkte - Nutzerentscheidung wegen unsauberer Daten. lat/lon fehlen noch."
     },
     {
       "id": "edeka-muenster-zentrum",

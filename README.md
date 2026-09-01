@@ -92,7 +92,8 @@ Verifizierungsstand pro Discounter (`scraper/src/discounters/`):
 | Rewe | ✅ funktioniert, gegen echte Angebotsseite verifiziert |
 | dm | ⚠️ funktioniert, aber nur Info-Kacheln ohne Preis (dm.de hat keine Preis-Angebotsseite wie Rewe) |
 | Lidl | ⚠️ funktioniert, aber nur Titel + Seitenbild ohne Preis (Blätterkatalog-Bildseiten, Preis nur im Bild) |
-| Netto, Edeka, Penny, Rossmann, Aldi Nord | ❌ unverifizierte Platzhalter, URL + Selektoren sind geraten |
+| Netto | ⚠️ funktioniert, aber nur ganze Prospektseiten ohne Preis (Publitas-Blätterkatalog ohne saubere Produktdaten, siehe TODO in netto.js) |
+| Edeka, Penny, Rossmann, Aldi Nord | ❌ unverifizierte Platzhalter, URL + Selektoren sind geraten |
 
 Die fünf offenen Module wurden ohne Zugriff auf die jeweilige Live-Website gebaut und brauchen vor
 dem ersten echten Lauf eine Prüfung/Anpassung per Browser-DevTools (Selektoren sind mit
