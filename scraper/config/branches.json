@@ -28,16 +28,17 @@
       "_hinweis": "Teaser-Kachel-Selektoren am 14.08.2026 verifiziert (siehe dm.js), Angebote sind Info-Kacheln ohne Preis, nicht filialspezifisch - sucheParam wird vom Scraper nicht benutzt. adresse/plz/lat/lon sind aber noch Platzhalter, nur für die Anzeige in der App relevant."
     },
     {
-      "id": "netto-muenster-zentrum",
+      "id": "netto-wolbecker-str-11",
       "discounterId": "netto",
-      "name": "Netto Münster Zentrum (Platzhalter)",
-      "adresse": "TODO: echte Adresse eintragen",
-      "plz": "48143",
+      "name": "Netto Marken-Discount Wolbecker Str. 11",
+      "adresse": "Wolbecker Str. 11",
+      "plz": "48155",
       "ort": "Münster",
-      "lat": 51.9607,
-      "lon": 7.6261,
-      "sucheParam": "48143",
-      "verifiziert": false
+      "lat": null,
+      "lon": null,
+      "sucheParam": "6199",
+      "verifiziert": false,
+      "_hinweis": "Adresse/PLZ/storeid echt (aus dem Seitenheader von netto-online.de), Schritt 1 (Prospekt-URL finden) in netto.js verifiziert. Schritt 2 (Angebotskarten selbst) noch NICHT verifiziert, siehe TODO in netto.js. lat/lon fehlen noch."
     },
     {
       "id": "edeka-muenster-zentrum",
