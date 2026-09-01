@@ -41,16 +41,17 @@
       "_hinweis": "Adresse/PLZ/storeid echt, beide Schritte (Prospekt-URL finden + Publitas-Blätteransicht durchblättern) am 14.08.2026 verifiziert (siehe netto.js). Angebote sind ganze Prospektseiten (Titel + Seitenbild + roher OCR-Text als beschreibung), keine einzelnen Produkte - Nutzerentscheidung wegen unsauberer Daten. lat/lon fehlen noch."
     },
     {
-      "id": "edeka-muenster-zentrum",
+      "id": "edeka-hafenmarkt",
       "discounterId": "edeka",
-      "name": "Edeka Münster Zentrum (Platzhalter)",
-      "adresse": "TODO: echte Adresse eintragen",
-      "plz": "48143",
+      "name": "EDEKA HafenMarkt",
+      "adresse": "Harkortstraße 30",
+      "plz": "48163",
       "ort": "Münster",
-      "lat": 51.9607,
-      "lon": 7.6261,
-      "sucheParam": "48143",
-      "verifiziert": false
+      "lat": null,
+      "lon": null,
+      "sucheParam": "074952",
+      "verifiziert": true,
+      "_hinweis": "Adresse/Markt-ID echt, am 14.08.2026 gegen die echte Marktseite verifiziert (siehe edeka.js). Angebote sind ganze Prospekt-Teaser (Titel + Vorschaubild + Gültigkeitszeitraum), keine einzelnen Produkte - der Blätterkatalog selbst liefert nicht einmal OCR-Text wie bei Netto, daher Nutzerentscheidung 'wie es ist' übernehmen. lat/lon fehlen noch."
     },
     {
       "id": "penny-muenster-zentrum",

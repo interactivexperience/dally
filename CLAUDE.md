@@ -61,12 +61,19 @@ firebase.json           Firestore-Config (Rules-Deploy)
     Angebote - Seite N", Seitenbild als `bildUrl`, roher OCR-Text als `beschreibung` fürs
     Durchsuchen, Gültigkeitszeitraum aus dem OCR-Text geparst wo vorhanden) - kein Versuch, einzelne
     Produkte/Preise herauszulösen
-  - ❌ `edeka.js`, `penny.js`, `rossmann.js`, `aldi.js` — **unverifizierte Platzhalter**,
+  - ⚠️ `edeka.js` — verifiziert, noch reduzierter als Netto: der Blätterkatalog von
+    blaetterkatalog.edeka.de ist rein Canvas-gerendert, liefert NICHT MAL einen OCR-Text (anders als
+    Netto) - nur nackte Seitenbild-URLs ohne Beschriftung. Auf Nutzerentscheidung ("wie es ist") wird
+    der Katalog deshalb gar nicht geöffnet: stattdessen wird direkt von der Marktseite
+    (`edeka.de/maerkte/<id>/prospekte/`) je Prospekt-Ausgabe (z. B. "Angebote der Woche",
+    "SUUPER Angebote") EIN Angebot übernommen - Titel, Vorschaubild (erste Katalogseite), echter
+    Gültigkeitszeitraum aus dem Seitentext. Kein Durchblättern, keine einzelnen Produkte
+  - ❌ `penny.js`, `rossmann.js`, `aldi.js` — **unverifizierte Platzhalter**,
     URL + Selektoren sind geraten (nach demselben Muster wie rewe.js/dm.js vor ihrer Verifizierung).
     Schlagen aktuell zuverlässig mit einer klaren Fehlermeldung fehl statt falsche Daten zu liefern
     (Fehlertoleranz greift, `scrapeStatus` zeigt das in der App an) - liefern aber noch keine echten
     Angebote. Aldi Nord ist eine Ergänzung über konzept.md hinaus.
-- Nächster Schritt: echtes Firebase-Projekt anlegen, die drei offenen Scraper (Edeka, Penny, Rossmann)
+- Nächster Schritt: echtes Firebase-Projekt anlegen, die zwei offenen Scraper (Penny, Rossmann)
   plus Aldi Nord nach und nach verifizieren (siehe Verifizierungs-Ablauf in `rewe.js`: echte
   HTML-Schnipsel einer Angebotskarte + der Marktauswahl liefern lassen, dann Selektoren/URL
   entsprechend anpassen). Bei Lidl optional noch prüfen, ob sich über die Hotspot-Seitenleiste echte
