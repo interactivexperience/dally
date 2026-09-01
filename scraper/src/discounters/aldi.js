@@ -1,26 +1,29 @@
 import { withPage } from '../lib/browser.js'
 
 /**
- * Netto-Scraper (Grundgerüst, NICHT verifiziert).
+ * Aldi-Scraper (Grundgerüst, NICHT verifiziert).
  *
- * TODO vor der ersten Nutzung: Selektoren UND URL sind geraten, nicht gegen
- * die echte Seite geprüft (anders als rewe.js/dm.js, siehe dort für den
- * Verifizierungs-Ablauf: echte HTML-Schnipsel einer Angebotskarte + der
- * Marktauswahl liefern, dann hier eintragen).
+ * Aldi Nord (nicht Aldi Süd - Aldi ist in Deutschland ebenfalls doppelt
+ * vergeben, je nach Region unterschiedliches Unternehmen). Für Münster/NRW
+ * ist Aldi Nord zuständig, aldi-nord.de.
  *
- * Geklärt (14.08.2026): gemeint ist das rot-gelbe Netto (zu Edeka gehörend),
- * NICHT Netto Marken-Discount (schwarz-gelb). Die genaue Domain/URL für
- * dieses Netto ist trotzdem noch unverifiziert - die unten eingetragene URL
- * ist weiterhin eine Vermutung, siehe TODO oben.
+ * TODO vor der ersten Nutzung: Selektoren UND genaue URL sind geraten, nicht
+ * gegen die echte Seite geprüft (siehe rewe.js für den Verifizierungs-Ablauf:
+ * echte HTML-Schnipsel einer Angebotskarte + der Marktauswahl liefern).
+ * Bekannt ist bisher nur: https://www.aldi-nord.de/prospekte/aldi-aktuell.html
+ * zeigt den aktuellen Prospekt - unklar, ob das eine normale HTML-Kartenliste
+ * ist oder wie bei anderen Ketten ein Blätterkatalog-Viewer (siehe die
+ * parallel laufende Prüfung bei Lidl/Netto - falls sich dort ein
+ * gemeinsames Muster zeigt, lohnt sich das zuerst hier zu prüfen).
  *
  * branchConfig.sucheParam wird vorerst als PLZ angenommen, siehe
  * scraper/config/branches.json.
  */
-export const id = 'netto'
-export const name = 'Netto'
+export const id = 'aldi'
+export const name = 'Aldi Nord'
 
 export async function scrape(branchConfig) {
-  const url = `https://www.netto-online.de/angebote/${encodeURIComponent(branchConfig.sucheParam)}` // TODO verifizieren
+  const url = `https://www.aldi-nord.de/prospekte/aldi-aktuell.html?searchterm=${encodeURIComponent(branchConfig.sucheParam)}` // TODO verifizieren
 
   return withPage(url, async (page) => {
     const kartenSelektor = '[data-testid="offer-tile"]' // TODO verifizieren, reine Vermutung

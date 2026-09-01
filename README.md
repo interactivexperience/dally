@@ -91,7 +91,8 @@ Verifizierungsstand pro Discounter (`scraper/src/discounters/`):
 |---|---|
 | Rewe | ✅ funktioniert, gegen echte Angebotsseite verifiziert |
 | dm | ⚠️ funktioniert, aber nur Info-Kacheln ohne Preis (dm.de hat keine Preis-Angebotsseite wie Rewe) |
-| Netto, Edeka, Penny, Lidl, Rossmann | ❌ unverifizierte Platzhalter, URL + Selektoren sind geraten |
+| Lidl | ⚠️ funktioniert, aber nur Titel + Seitenbild ohne Preis (Blätterkatalog-Bildseiten, Preis nur im Bild) |
+| Netto, Edeka, Penny, Rossmann, Aldi Nord | ❌ unverifizierte Platzhalter, URL + Selektoren sind geraten |
 
 Die fünf offenen Module wurden ohne Zugriff auf die jeweilige Live-Website gebaut und brauchen vor
 dem ersten echten Lauf eine Prüfung/Anpassung per Browser-DevTools (Selektoren sind mit
