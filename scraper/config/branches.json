@@ -54,16 +54,17 @@
       "_hinweis": "Adresse/Markt-ID echt, am 14.08.2026 gegen die echte Marktseite verifiziert (siehe edeka.js). Angebote sind ganze Prospekt-Teaser (Titel + Vorschaubild + Gültigkeitszeitraum), keine einzelnen Produkte - der Blätterkatalog selbst liefert nicht einmal OCR-Text wie bei Netto, daher Nutzerentscheidung 'wie es ist' übernehmen. lat/lon fehlen noch."
     },
     {
-      "id": "penny-muenster-zentrum",
+      "id": "penny-hansaring",
       "discounterId": "penny",
-      "name": "Penny Münster Zentrum (Platzhalter)",
-      "adresse": "TODO: echte Adresse eintragen",
-      "plz": "48143",
+      "name": "Penny Hansaring",
+      "adresse": "Hansaring 46-48",
+      "plz": "TODO: PLZ prüfen",
       "ort": "Münster",
-      "lat": 51.9607,
-      "lon": 7.6261,
-      "sucheParam": "48143",
-      "verifiziert": false
+      "lat": null,
+      "lon": null,
+      "sucheParam": "muenster/1775002/penny-hansaring-hansaring-46-48",
+      "verifiziert": true,
+      "_hinweis": "Adresse + Markt-ID echt, Angebotskarten-Selektoren + Preis-Auswahl-Logik (mehrere Bubble-Varianten) am 14.08.2026 gegen echte Karten der Angebotsseite verifiziert (siehe penny.js). Zwei Annahmen NICHT live testbar: ob der vorherige Besuch der Marktseite tatsächlich die Marktauswahl für /angebote setzt, und ob die Auto-Scroll-Schleife das Nachladen der noch nicht sichtbaren Kategorien zuverlässig auslöst. gueltigVon/Bis bisher nicht gefunden, bleiben null. lat/lon/plz fehlen noch."
     },
     {
       "id": "lidl-muenster-zentrum",

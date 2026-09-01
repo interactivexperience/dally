@@ -6,10 +6,11 @@ und zeigt eine „Diese Woche neu"-Startansicht. Hintergrund und Architektur-Beg
 
 **Phase 1 (MVP), aktueller Stand:** Datenmodell + Firestore Security Rules, Firebase-Client/-Admin-Setup,
 Scraper-Module für alle 7 MVP-Discounter aus konzept.md (Rewe, dm, Netto, Edeka, Penny, Lidl,
-Rossmann) - davon ist aber nur **Rewe vollständig verifiziert und funktionsfähig**, dm liefert
-verifizierte Info-Kacheln ohne Preis, die übrigen fünf sind unverifizierte Platzhalter (siehe
-"Scraper: wichtige Einschränkung" unten). Dazu: einfache Filter-UI (Text + Händler, ohne
-KI-Kategorisierung), Login für einen Nutzer, barrierefreies Grundlayout, UI auf Deutsch/Vietnamesisch/Englisch.
+Rossmann) plus Aldi Nord als Ergänzung - davon sind **Rewe und Penny vollständig verifiziert und
+funktionsfähig** (inkl. echter Preise), dm/Lidl/Netto/Edeka liefern verifizierte, aber bewusst
+reduzierte Angebote (siehe "Scraper: wichtige Einschränkung" unten), Rossmann und Aldi Nord sind noch
+unverifizierte Platzhalter. Dazu: einfache Filter-UI (Text + Händler, ohne KI-Kategorisierung), Login
+für einen Nutzer, barrierefreies Grundlayout, UI auf Deutsch/Vietnamesisch/Englisch.
 
 ## Projektstruktur
 
@@ -94,20 +95,22 @@ Verifizierungsstand pro Discounter (`scraper/src/discounters/`):
 | Lidl | ⚠️ funktioniert, aber nur Titel + Seitenbild ohne Preis (Blätterkatalog-Bildseiten, Preis nur im Bild) |
 | Netto | ⚠️ funktioniert, aber nur ganze Prospektseiten ohne Preis (Publitas-Blätterkatalog ohne saubere Produktdaten, siehe TODO in netto.js) |
 | Edeka | ⚠️ funktioniert, aber nur je ein Eintrag pro Prospekt-Ausgabe (Titel+Vorschaubild+Zeitraum) - der Blätterkatalog liefert nicht mal OCR-Text wie bei Netto |
-| Penny, Rossmann, Aldi Nord | ❌ unverifizierte Platzhalter, URL + Selektoren sind geraten |
+| Penny | ✅ funktioniert, gegen echte Angebotskarten verifiziert (inkl. Preis + teils Streichpreis) - Marktauswahl-Navigation und Auto-Scroll fürs Nachladen sind aber ungetestete Annahmen, siehe penny.js |
+| Rossmann, Aldi Nord | ❌ unverifizierte Platzhalter, URL + Selektoren sind geraten |
 
-Die fünf offenen Module wurden ohne Zugriff auf die jeweilige Live-Website gebaut und brauchen vor
-dem ersten echten Lauf eine Prüfung/Anpassung per Browser-DevTools (Selektoren sind mit
-`// TODO verifizieren` markiert, siehe auch die ausführlicheren Hinweise am Kopf jeder Datei). Das
-ist keine Nachlässigkeit, sondern folgt bewusst konzept.md Punkt 4: Discounter-Websites ändern ihr
-Markup regelmäßig, das ist laufender Wartungsaufwand, kein einmaliges Setup - Rewe und dm zeigen im
-Kommentar am Dateikopf, wie der Verifizierungs-Ablauf aussieht (echte HTML-Schnipsel einer
-Angebotskarte + der Marktauswahl besorgen, Selektoren entsprechend anpassen, mit einem kleinen
-Testskript gegenprüfen).
+Die zwei noch offenen Module (Rossmann, Aldi Nord) wurden ohne Zugriff auf die jeweilige Live-Website
+gebaut und brauchen vor dem ersten echten Lauf eine Prüfung/Anpassung per Browser-DevTools
+(Selektoren sind mit `// TODO verifizieren` markiert, siehe auch die ausführlicheren Hinweise am Kopf
+jeder Datei). Das ist keine Nachlässigkeit, sondern folgt bewusst konzept.md Punkt 4:
+Discounter-Websites ändern ihr Markup regelmäßig, das ist laufender Wartungsaufwand, kein einmaliges
+Setup - Rewe, dm und Penny zeigen im Kommentar am Dateikopf, wie der Verifizierungs-Ablauf aussieht
+(echte HTML-Schnipsel einer Angebotskarte + der Marktauswahl besorgen, Selektoren entsprechend
+anpassen, mit einem kleinen Testskript gegenprüfen).
 
-Ebenso sind die Filialdaten in `scraper/config/branches.json` für alle Discounter außer Rewe aktuell
-**ungeprüfte Platzhalter** (Münster-Zentrums-Koordinaten, keine echte Adresse) - vor dem ersten Lauf
-durch echte, verifizierte Filialdaten ersetzen.
+Ebenso sind die Filialdaten in `scraper/config/branches.json` für Rossmann und Aldi Nord aktuell
+**ungeprüfte Platzhalter** (Münster-Zentrums-Koordinaten, keine echte Adresse). Rewe, Netto, Edeka und
+Penny haben echte Adressen (Penny noch ohne geprüfte PLZ/Koordinaten) - vor dem ersten Lauf des
+jeweiligen Scrapers durch echte, vollständig verifizierte Filialdaten ersetzen.
 
 Scraping erfolgt sequenziell (nicht parallel) und mit moderater Frequenz (wöchentlicher Cron +
 manuelles `workflow_dispatch`), robots.txt der jeweiligen Seite sollte vor dem produktiven Einsatz

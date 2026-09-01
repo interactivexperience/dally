@@ -68,26 +68,42 @@ firebase.json           Firestore-Config (Rules-Deploy)
     (`edeka.de/maerkte/<id>/prospekte/`) je Prospekt-Ausgabe (z. B. "Angebote der Woche",
     "SUUPER Angebote") EIN Angebot übernommen - Titel, Vorschaubild (erste Katalogseite), echter
     Gültigkeitszeitraum aus dem Seitentext. Kein Durchblättern, keine einzelnen Produkte
-  - ❌ `penny.js`, `rossmann.js`, `aldi.js` — **unverifizierte Platzhalter**,
+  - ✅ `penny.js` — bester Fall nach REWE: Penny (REWE-Group-Schwester) zeigt Angebote als echte
+    Karten-Liste (nicht Blätterkatalog), inklusive Preis UND teilweise Streichpreis. Gegen echte
+    Angebotskarten der Penny-Hansaring-Seite verifiziert (14.08.2026): Kartenselektor
+    `a.offer-tile__link[data-detail-url]` erfasst nur echte Angebote, weder Empfehlungs-Kacheln noch
+    Lazy-Loading-Platzhalter. Preis-Logik behandelt drei Kartenvarianten (einfacher Preis, Preis mit
+    Streichpreis, sowie App-exklusiver Preis + sekundäre Bubble mit UVP/regulärem Preis - hier wird
+    bewusst die sekundäre/reguläre Bubble genommen, nicht die App-exklusive). Zwei Annahmen sind
+    NICHT live testbar gewesen: ob ein vorheriger Besuch der Marktseite (`/markt/<pfad>`) tatsächlich
+    die Marktauswahl für `/angebote` setzt, und ob die eingebaute Auto-Scroll-Schleife das
+    AJAX-Nachladen der anfangs nur als Platzhalter sichtbaren Kategorien zuverlässig auslöst.
+    gueltigVon/Bis wurden auf keiner Karte gefunden, bleiben vorerst null.
+  - ❌ `rossmann.js`, `aldi.js` — **unverifizierte Platzhalter**,
     URL + Selektoren sind geraten (nach demselben Muster wie rewe.js/dm.js vor ihrer Verifizierung).
     Schlagen aktuell zuverlässig mit einer klaren Fehlermeldung fehl statt falsche Daten zu liefern
     (Fehlertoleranz greift, `scrapeStatus` zeigt das in der App an) - liefern aber noch keine echten
     Angebote. Aldi Nord ist eine Ergänzung über konzept.md hinaus.
-- Nächster Schritt: echtes Firebase-Projekt anlegen, die zwei offenen Scraper (Penny, Rossmann)
-  plus Aldi Nord nach und nach verifizieren (siehe Verifizierungs-Ablauf in `rewe.js`: echte
-  HTML-Schnipsel einer Angebotskarte + der Marktauswahl liefern lassen, dann Selektoren/URL
-  entsprechend anpassen). Bei Lidl optional noch prüfen, ob sich über die Hotspot-Seitenleiste echte
-  Preise nachladen lassen.
+- Nächster Schritt: echtes Firebase-Projekt anlegen, den letzten offenen Scraper (Rossmann) plus
+  Aldi Nord verifizieren (siehe Verifizierungs-Ablauf in `rewe.js`: echte HTML-Schnipsel einer
+  Angebotskarte + der Marktauswahl liefern lassen, dann Selektoren/URL entsprechend anpassen). Bei
+  Lidl optional noch prüfen, ob sich über die Hotspot-Seitenleiste echte Preise nachladen lassen. Bei
+  Penny optional noch prüfen (sobald Live-Zugriff möglich), ob Marktauswahl-Navigation und
+  Auto-Scroll tatsächlich wie angenommen funktionieren.
 
 ## Offene TODOs (menschliches Zutun nötig, kann Claude nicht selbst erledigen)
 - Firebase-Projekt anlegen (Auth E-Mail/Passwort aktivieren, Firestore anlegen), Web-App-Config in `app/.env` eintragen
 - Firebase-Admin Service-Account-Key erzeugen, als GitHub-Actions-Secret `FIREBASE_SERVICE_ACCOUNT` hinterlegen
 - GitHub Pages aktivieren: Repo → Settings → Pages → Source: GitHub Actions
-- CSS-Selektoren + URLs in `netto.js`, `edeka.js`, `penny.js`, `rossmann.js`, `aldi.js` gegen die
-  jeweilige Live-Website prüfen/anpassen (Selektoren sind Platzhalter, Seiten sind JS-gerendert und
-  ändern sich regelmäßig — siehe konzept.md Punkt 4)
-- Echte Filialdaten (Adresse/PLZ/Koordinaten) für Netto, Edeka, Penny, Lidl, Rossmann, Aldi Nord und
-  dm in `scraper/config/branches.json` ergänzen (bisher nur REWE hat eine echte Adresse)
+- CSS-Selektoren + URLs in `rossmann.js`, `aldi.js` gegen die jeweilige Live-Website prüfen/anpassen
+  (Selektoren sind Platzhalter, Seiten sind JS-gerendert und ändern sich regelmäßig — siehe
+  konzept.md Punkt 4)
+- Bei Penny live prüfen, ob die Marktauswahl-Navigation (`/markt/<pfad>` vor `/angebote`) und die
+  Auto-Scroll-Schleife fürs Nachladen der restlichen Kategorien tatsächlich wie in `penny.js`
+  angenommen funktionieren
+- Echte Filialdaten (Adresse/PLZ/Koordinaten) für Lidl, Rossmann, Aldi Nord und dm in
+  `scraper/config/branches.json` ergänzen (Rewe, Netto, Edeka, Penny haben bereits echte Adressen -
+  bei Penny fehlt noch die geprüfte PLZ)
 - Gemini-API-Key besorgen (Phase 2, noch nicht benötigt)
 
 ## Befehle
