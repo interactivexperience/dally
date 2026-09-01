@@ -46,8 +46,11 @@ firebase.json           Firestore-Config (Rules-Deploy)
   - ⚠️ `lidl.js` — verifiziert, aber wie dm reduzierter Umfang: Lidl zeigt Angebote als
     Blätterkatalog-Bildseiten (`leaflets.schwarz`-Plattform), Preis ist nur im Seitenbild eingebrannt,
     nicht als Text/Daten. Übernommen als Info-Angebote (Titel aus Hotspot-`aria-label` + Seitenbild
-    als `bildUrl`) ohne `preis`/`alterPreis`. Die Hotspots öffnen beim Klick eine Seitenleiste, die
-    vermutlich per AJAX den Preis nachlädt - noch nicht geprüft, wäre der Weg zu echten Preisen
+    als `bildUrl`, echter Gültigkeitszeitraum aus dem Seiten-alt-Text) ohne `preis`/`alterPreis`. Die
+    aktuelle Wochen-Flyer-URL wird automatisch über ein JSON-LD (schema.org OfferCatalog) auf der
+    Prospekt-Übersichtsseite gefunden - kein manuelles wöchentliches URL-Update nötig. Die Hotspots
+    öffnen beim Klick eine Seitenleiste, die vermutlich per AJAX den Preis nachlädt - noch nicht
+    geprüft, wäre der Weg zu echten Preisen
   - ❌ `netto.js`, `edeka.js`, `penny.js`, `rossmann.js`, `aldi.js` — **unverifizierte Platzhalter**,
     URL + Selektoren sind geraten (nach demselben Muster wie rewe.js/dm.js vor ihrer Verifizierung).
     Schlagen aktuell zuverlässig mit einer klaren Fehlermeldung fehl statt falsche Daten zu liefern

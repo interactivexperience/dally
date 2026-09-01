@@ -72,9 +72,9 @@
       "ort": "Münster",
       "lat": 51.9607,
       "lon": 7.6261,
-      "sucheParam": "https://www.lidl.de/l/prospekte/aktionsprospekt-17-08-2026-22-08-2026-2524da/view/flyer/page/1?_ab=1&lf=HHZ",
+      "sucheParam": null,
       "verifiziert": true,
-      "_hinweis": "Prospektseiten-Struktur + Hotspot-Selektoren am 14.08.2026 verifiziert (siehe lidl.js), Angebote sind Info-Kacheln ohne Preis (nur im Seitenbild). WICHTIG: diese Flyer-URL ist nur für die Kalenderwoche 17.-22.08.2026 gültig und muss wöchentlich von Hand aktualisiert werden (URL enthält Datum+Hash), bis das automatisiert ist (siehe TODO in lidl.js). adresse/plz/lat/lon sind noch Platzhalter."
+      "_hinweis": "Prospektseiten-Struktur + Hotspot-Selektoren am 14.08.2026 verifiziert (siehe lidl.js), Angebote sind Info-Kacheln ohne Preis (nur im Seitenbild). Die aktuelle Wochen-Flyer-URL wird automatisch über das JSON-LD auf der Prospekt-Übersichtsseite gefunden, kein manuelles Update mehr nötig - sucheParam wird vom Scraper nicht benutzt. adresse/plz/lat/lon sind noch Platzhalter."
     },
     {
       "id": "rossmann-muenster-zentrum",
