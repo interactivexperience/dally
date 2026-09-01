@@ -6,10 +6,10 @@ und zeigt eine „Diese Woche neu"-Startansicht. Hintergrund und Architektur-Beg
 
 **Phase 1 (MVP), aktueller Stand:** Datenmodell + Firestore Security Rules, Firebase-Client/-Admin-Setup,
 Scraper-Module für alle 7 MVP-Discounter aus konzept.md (Rewe, dm, Netto, Edeka, Penny, Lidl,
-Rossmann) plus Aldi Nord als Ergänzung - davon sind **Rewe und Penny vollständig verifiziert und
-funktionsfähig** (inkl. echter Preise), dm/Lidl/Netto/Edeka liefern verifizierte, aber bewusst
-reduzierte Angebote (siehe "Scraper: wichtige Einschränkung" unten), Rossmann und Aldi Nord sind noch
-unverifizierte Platzhalter. Dazu: einfache Filter-UI (Text + Händler, ohne KI-Kategorisierung), Login
+Rossmann) plus Aldi Nord als Ergänzung - davon sind **Rewe, Penny und Rossmann vollständig verifiziert
+und funktionsfähig** (inkl. echter Preise), dm/Lidl/Netto/Edeka liefern verifizierte, aber bewusst
+reduzierte Angebote (siehe "Scraper: wichtige Einschränkung" unten), Aldi Nord ist noch ein
+unverifizierter Platzhalter. Dazu: einfache Filter-UI (Text + Händler, ohne KI-Kategorisierung), Login
 für einen Nutzer, barrierefreies Grundlayout, UI auf Deutsch/Vietnamesisch/Englisch.
 
 ## Projektstruktur
@@ -96,21 +96,23 @@ Verifizierungsstand pro Discounter (`scraper/src/discounters/`):
 | Netto | ⚠️ funktioniert, aber nur ganze Prospektseiten ohne Preis (Publitas-Blätterkatalog ohne saubere Produktdaten, siehe TODO in netto.js) |
 | Edeka | ⚠️ funktioniert, aber nur je ein Eintrag pro Prospekt-Ausgabe (Titel+Vorschaubild+Zeitraum) - der Blätterkatalog liefert nicht mal OCR-Text wie bei Netto |
 | Penny | ✅ funktioniert, gegen echte Angebotskarten verifiziert (inkl. Preis + teils Streichpreis) - Marktauswahl-Navigation und Auto-Scroll fürs Nachladen sind aber ungetestete Annahmen, siehe penny.js |
-| Rossmann, Aldi Nord | ❌ unverifizierte Platzhalter, URL + Selektoren sind geraten |
+| Rossmann | ✅ funktioniert, echter paginierter Produktkatalog mit Online-Shop-Preisen verifiziert - aber NICHT filialspezifisch (bundesweiter Katalog, kein alter Preis/UVP auf den Karten) |
+| Aldi Nord | ❌ unverifizierter Platzhalter, URL + Selektoren sind geraten |
 
-Die zwei noch offenen Module (Rossmann, Aldi Nord) wurden ohne Zugriff auf die jeweilige Live-Website
-gebaut und brauchen vor dem ersten echten Lauf eine Prüfung/Anpassung per Browser-DevTools
-(Selektoren sind mit `// TODO verifizieren` markiert, siehe auch die ausführlicheren Hinweise am Kopf
-jeder Datei). Das ist keine Nachlässigkeit, sondern folgt bewusst konzept.md Punkt 4:
-Discounter-Websites ändern ihr Markup regelmäßig, das ist laufender Wartungsaufwand, kein einmaliges
-Setup - Rewe, dm und Penny zeigen im Kommentar am Dateikopf, wie der Verifizierungs-Ablauf aussieht
-(echte HTML-Schnipsel einer Angebotskarte + der Marktauswahl besorgen, Selektoren entsprechend
-anpassen, mit einem kleinen Testskript gegenprüfen).
+Das letzte noch offene Modul (Aldi Nord) wurde ohne Zugriff auf die Live-Website gebaut und braucht
+vor dem ersten echten Lauf eine Prüfung/Anpassung per Browser-DevTools (Selektoren sind mit
+`// TODO verifizieren` markiert, siehe auch die ausführlicheren Hinweise am Kopf der Datei). Das ist
+keine Nachlässigkeit, sondern folgt bewusst konzept.md Punkt 4: Discounter-Websites ändern ihr Markup
+regelmäßig, das ist laufender Wartungsaufwand, kein einmaliges Setup - Rewe, dm, Penny und Rossmann
+zeigen im Kommentar am Dateikopf, wie der Verifizierungs-Ablauf aussieht (echte HTML-Schnipsel einer
+Angebotskarte + der Marktauswahl besorgen, Selektoren entsprechend anpassen, mit einem kleinen
+Testskript gegenprüfen).
 
-Ebenso sind die Filialdaten in `scraper/config/branches.json` für Rossmann und Aldi Nord aktuell
-**ungeprüfte Platzhalter** (Münster-Zentrums-Koordinaten, keine echte Adresse). Rewe, Netto, Edeka und
-Penny haben echte Adressen (Penny noch ohne geprüfte PLZ/Koordinaten) - vor dem ersten Lauf des
-jeweiligen Scrapers durch echte, vollständig verifizierte Filialdaten ersetzen.
+Ebenso sind die Filialdaten in `scraper/config/branches.json` für Lidl, Rossmann, Aldi Nord und dm
+aktuell **ungeprüfte Platzhalter** (Münster-Zentrums-Koordinaten, keine echte Adresse) - bei dm und
+Rossmann ist das unkritisch, da beide bundesweite, nicht filialspezifische Kataloge scrapen. Rewe,
+Netto, Edeka und Penny haben echte Adressen (Penny noch ohne geprüfte PLZ/Koordinaten) - vor dem
+ersten Lauf des jeweiligen Scrapers durch echte, vollständig verifizierte Filialdaten ersetzen.
 
 Scraping erfolgt sequenziell (nicht parallel) und mit moderater Frequenz (wöchentlicher Cron +
 manuelles `workflow_dispatch`), robots.txt der jeweiligen Seite sollte vor dem produktiven Einsatz

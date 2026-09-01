@@ -88,8 +88,9 @@
       "ort": "Münster",
       "lat": 51.9607,
       "lon": 7.6261,
-      "sucheParam": "48143",
-      "verifiziert": false
+      "sucheParam": null,
+      "verifiziert": true,
+      "_hinweis": "Angebotskarten-Selektoren + Paginierung am 14.08.2026 gegen die echte Angebotsseite verifiziert (siehe rossmann.js). Anders als ursprünglich vermutet: echter, paginierter Produktkatalog mit Online-Shop-Preisen statt Kampagnen-Kacheln ohne Preis - aber NICHT filialspezifisch (bundesweiter Online-Katalog, keine Marktauswahl gefunden), sucheParam wird deshalb wie bei dm nicht benutzt. adresse/plz/lat/lon sind noch Platzhalter, nur für die Anzeige in der App relevant."
     },
     {
       "id": "aldi-nord-muenster-zentrum",
