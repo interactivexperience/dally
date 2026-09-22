@@ -90,31 +90,51 @@ firebase.json           Firestore-Config (Rules-Deploy)
     die Seite ist NICHT filialspezifisch (keine Marktauswahl gefunden, bundesweiter Online-Katalog) -
     `sucheParam` wird deshalb wie bei dm nicht benutzt. Kein durchgestrichener alter Preis/UVP auf
     den gesehenen Karten gefunden, `alterPreis` bleibt deshalb immer null (wie bei rewe.js).
-  - ❌ `aldi.js` — **unverifizierter Platzhalter**,
-    URL + Selektoren sind geraten (nach demselben Muster wie rewe.js/dm.js vor ihrer Verifizierung).
-    Schlägt aktuell zuverlässig mit einer klaren Fehlermeldung fehl statt falsche Daten zu liefern
-    (Fehlertoleranz greift, `scrapeStatus` zeigt das in der App an) - liefert aber noch keine echten
-    Angebote. Aldi Nord ist eine Ergänzung über konzept.md hinaus.
-- Nächster Schritt: echtes Firebase-Projekt anlegen, den letzten offenen Scraper (Aldi Nord)
-  verifizieren (siehe Verifizierungs-Ablauf in `rewe.js`: echte HTML-Schnipsel einer Angebotskarte +
-  der Marktauswahl liefern lassen, dann Selektoren/URL entsprechend anpassen). Bei Lidl optional noch
-  prüfen, ob sich über die Hotspot-Seitenleiste echte Preise nachladen lassen. Bei Penny optional
-  noch prüfen (sobald Live-Zugriff möglich), ob Marktauswahl-Navigation und Auto-Scroll tatsächlich
-  wie angenommen funktionieren.
+  - ✅ `aldi.js` — zweitbester Fall nach Rewe/Penny/Rossmann, mit Abstand der beste
+    Blätterkatalog-Fall: Aldi Nords Prospektseite (`aldi-nord.de/prospekte/aldi-aktuell.html`)
+    bettet den Katalog als iframe einer "iPaper"-Plattform ein, aber das server-seitig
+    vorab abgerufene `__NEXT_DATA__`-JSON der Übersichtsseite enthält bereits ALLE
+    Seitenbild-URLs ohne Token/Expiry (`LEAFLET_IPAPER_STRUCTURE_GET`-Eintrag) - keine
+    Katalog-Navigation nötig, um an die Bilder zu kommen. Wichtiger noch: der
+    Blätterkatalog selbst liefert (anders als bei Netto/Lidl/Edeka) eine versteckte
+    Bedienungshilfen-Textsektion (`#bookPageText section`) mit ECHTEM strukturiertem
+    Text pro Seite (kein OCR-Blob) inklusive Produktname, Beschreibung und Preis samt
+    Streichpreis/UVP. Am 22.09.2026 gegen die echte Seite 1 verifiziert: eine
+    Preis-Marker-Regex (`<Zahl>. <2 Ziffern> <Sternchen>`, gefolgt optional von einem
+    Streichpreis/UVP) splittet den Fließtext zuverlässig in 11 von 11 echten Produkten
+    samt korrektem Preis/Streichpreis. Gültigkeitszeitraum aus dem Seitentext geparst
+    (Jahr fehlt im Text, wird anhand des aktuellen Datums ergänzt). BEKANNTE
+    EINSCHRÄNKUNG: Marketing-Banner-Text landet gelegentlich mit im Produkttitel
+    (verfälscht keine Preise, nur unsaubere Titel). NICHT live über Seite 1 hinaus
+    testbar: ob die Klick-Navigation (links/rechts-Zonen) zuverlässig durch den ganzen
+    Katalog blättert, und ob Mehrseiten-Ansichten (ab Seite 2) die Textsektion pro
+    Einzelseite oder kombiniert liefern - die Schleife ist bewusst robust gegenüber
+    beiden Fällen geschrieben, bricht aber vorsichtshalber ab, wenn die erkannte
+    Seitenzahl über mehrere Versuche stehen bleibt. Keine Marktauswahl gefunden
+    (bundesweiter Online-Prospekt wie bei dm/Rossmann), `sucheParam` wird nicht benutzt.
+- **Alle 8 Discounter-Module sind jetzt verifiziert** (3× volle Preisdaten, 4× bewusst
+  reduzierter Umfang, 1× Blätterkatalog mit echten Preisen aber ungetesteter
+  Mehrseiten-Navigation). Nächster Schritt: echtes Firebase-Projekt anlegen (siehe
+  "Offene TODOs" unten). Optional zur Qualitätsverbesserung, sobald Live-Zugriff
+  möglich ist: bei Lidl prüfen, ob sich über die Hotspot-Seitenleiste echte Preise
+  nachladen lassen; bei Penny prüfen, ob Marktauswahl-Navigation und Auto-Scroll
+  tatsächlich wie angenommen funktionieren; bei Aldi Nord prüfen, ob die
+  Klick-Navigation zuverlässig durch den ganzen Katalog (nicht nur Seite 1) blättert.
 
 ## Offene TODOs (menschliches Zutun nötig, kann Claude nicht selbst erledigen)
 - Firebase-Projekt anlegen (Auth E-Mail/Passwort aktivieren, Firestore anlegen), Web-App-Config in `app/.env` eintragen
 - Firebase-Admin Service-Account-Key erzeugen, als GitHub-Actions-Secret `FIREBASE_SERVICE_ACCOUNT` hinterlegen
 - GitHub Pages aktivieren: Repo → Settings → Pages → Source: GitHub Actions
-- CSS-Selektoren + URL in `aldi.js` gegen die Live-Website prüfen/anpassen (Selektoren sind
-  Platzhalter, Seiten sind JS-gerendert und ändern sich regelmäßig — siehe konzept.md Punkt 4)
+- CSS-Selektoren + URL in `aldi.js` gegen die Live-Website prüfen, insbesondere ob die
+  Klick-Navigation zuverlässig über Seite 1 hinaus durch den ganzen Katalog blättert
+  (Selektoren sind JS-gerendert und ändern sich regelmäßig — siehe konzept.md Punkt 4)
 - Bei Penny live prüfen, ob die Marktauswahl-Navigation (`/markt/<pfad>` vor `/angebote`) und die
   Auto-Scroll-Schleife fürs Nachladen der restlichen Kategorien tatsächlich wie in `penny.js`
   angenommen funktionieren
 - Echte Filialdaten (Adresse/PLZ/Koordinaten) für Lidl, Aldi Nord und dm in
   `scraper/config/branches.json` ergänzen (Rewe, Netto, Edeka, Penny haben bereits echte Adressen -
-  bei Penny fehlt noch die geprüfte PLZ; Rossmann/dm sind bundesweite, nicht filialspezifische
-  Kataloge, dort ist adresse/plz/lat/lon nur für die Anzeige relevant)
+  bei Penny fehlt noch die geprüfte PLZ; Rossmann/dm/Aldi Nord sind bundesweite, nicht
+  filialspezifische Kataloge, dort ist adresse/plz/lat/lon nur für die Anzeige relevant)
 - Gemini-API-Key besorgen (Phase 2, noch nicht benötigt)
 
 ## Befehle

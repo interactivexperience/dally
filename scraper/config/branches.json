@@ -101,8 +101,9 @@
       "ort": "Münster",
       "lat": 51.9607,
       "lon": 7.6261,
-      "sucheParam": "48143",
-      "verifiziert": false
+      "sucheParam": null,
+      "verifiziert": true,
+      "_hinweis": "Am 22.09.2026 gegen die echte Prospektseite verifiziert (siehe aldi.js): der Blätterkatalog liefert echte, strukturierte Preistexte pro Seite (nicht nur OCR/Bild wie bei Netto/Lidl/Edeka), daraus werden per Regex einzelne Produkte samt Preis/Streichpreis extrahiert - bester Blätterkatalog-Fall bisher. Zwei Annahmen NICHT live testbar: ob die Klick-Navigation (links/rechts-Zonen) zuverlässig durch den ganzen Katalog blättert, und ob Mehrseiten-Ansichten (ab Seite 2) die Bedienungshilfen-Textsektion pro Einzelseite oder kombiniert liefern - die Schleife ist robust gegenüber beiden Fällen, aber ungetestet über Seite 1 hinaus. Keine Marktauswahl gefunden (bundesweiter Online-Prospekt wie bei dm/Rossmann), sucheParam wird nicht benutzt. adresse/plz/lat/lon sind noch Platzhalter, nur für die Anzeige relevant."
     }
   ]
 }
