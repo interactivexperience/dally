@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'app/**'
+      - 'package-lock.json'
       - '.github/workflows/deploy.yml'
   workflow_dispatch: {}
 
@@ -20,20 +21,18 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
     steps:
       - uses: actions/checkout@v4
 
+      # npm-Workspaces: es gibt nur die gemeinsame package-lock.json im Projekt-Root,
+      # keine eigene in app/. Deshalb vom Root aus installieren und bauen.
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: app/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --workspace app
 
       - name: Build
         env:
@@ -43,12 +42,12 @@ jobs:
           VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
           VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
-        run: npm run build
+        run: npm run build --workspace app
 
       - name: SPA-Fallback für Client-Routing (React Router)
         # GitHub Pages kennt keine Server-Rewrites wie Firebase Hosting - ohne das
         # hier würde ein Reload auf z.B. /dally/einstellungen mit 404 enden.
-        run: cp dist/index.html dist/404.html
+        run: cp app/dist/index.html app/dist/404.html
 
       - uses: actions/configure-pages@v5
 

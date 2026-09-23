@@ -10,20 +10,18 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    defaults:
-      run:
-        working-directory: scraper
     steps:
       - uses: actions/checkout@v4
 
+      # npm-Workspaces: es gibt nur die gemeinsame package-lock.json im Projekt-Root,
+      # keine eigene in scraper/. Deshalb vom Root aus installieren und starten.
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: scraper/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --workspace scraper
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
@@ -32,4 +30,4 @@ jobs:
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-        run: npm run start
+        run: npm run start --workspace scraper
