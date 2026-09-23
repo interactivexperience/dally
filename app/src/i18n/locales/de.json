@@ -6,7 +6,8 @@
   "nav": {
     "offers": "Angebote",
     "settings": "Einstellungen",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "main": "Hauptnavigation"
   },
   "login": {
     "title": "Anmelden",
@@ -22,16 +23,19 @@
     "searchLabel": "Angebote durchsuchen",
     "searchPlaceholder": "z. B. Butter, Windeln, Apfel …",
     "discounterLabel": "Händler",
-    "allDiscounters": "Alle Händler",
+    "allDiscounters": "Alle",
     "empty": "Keine Angebote gefunden. Versuche einen anderen Suchbegriff oder Händler.",
     "loading": "Angebote werden geladen …",
     "new": "Neu",
-    "validUntil": "Gültig bis {{date}}",
+    "validUntil": "bis {{date}}",
     "perUnit": "je {{unit}}",
-    "originalPriceLabel": "statt {{price}} €",
+    "originalPriceLabel": "statt {{price}}",
     "viewOriginal": "Zum Angebot beim Händler",
     "lastUpdated": "Zuletzt aktualisiert: {{date}}",
-    "refresh": "Ansicht aktualisieren"
+    "refresh": "Ansicht aktualisieren",
+    "week": "KW {{week}}",
+    "count_one": "{{count}} Angebot",
+    "count_other": "{{count}} Angebote"
   },
   "settings": {
     "title": "Einstellungen",
@@ -41,7 +45,10 @@
     "fontSizeNormal": "Normal",
     "fontSizeLarge": "Groß",
     "city": "Stadt",
-    "radius": "Umkreis"
+    "radius": "Umkreis",
+    "location": "Standort",
+    "account": "Konto",
+    "autosave": "Änderungen werden sofort gespeichert."
   },
   "common": {
     "save": "Speichern",

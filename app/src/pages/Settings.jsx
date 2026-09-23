@@ -9,81 +9,111 @@ const SPRACHEN = [
 
 const RADIEN_KM = [2, 5, 10, 20]
 
+// Abschnitt = Haarlinie, Versalien-Marke, Inhalt. Keine Kästen, keine
+// verschachtelten Container - eine Ebene.
+function Abschnitt({ titel, children, als: Tag = 'section' }) {
+  const Titel = Tag === 'fieldset' ? 'legend' : 'h2'
+  return (
+    <div className="border-t border-linie pt-5 pb-3">
+      <Tag>
+        <Titel className="versalien">{titel}</Titel>
+        {children}
+      </Tag>
+    </div>
+  )
+}
+
+// Eine Reihe Textschalter. Die Auswahl wird unterstrichen, nicht umrandet;
+// beim Tastaturfokus wird die Unterlinie gestrichelt.
+function Textschalter({ name, optionen, wert, onWahl }) {
+  return (
+    <div className="mt-1 flex flex-wrap gap-x-6">
+      {optionen.map((o) => (
+        <label key={o.wert} className="min-h-touch flex items-end pb-2 cursor-pointer">
+          <input
+            type="radio"
+            name={name}
+            value={o.wert}
+            checked={wert === o.wert}
+            onChange={() => onWahl(o.wert)}
+            className="peer sr-only"
+          />
+          <span
+            lang={o.lang}
+            className={`border-b-2 border-transparent pb-1 font-medium tracking-[-0.02em] text-muted peer-checked:border-ink peer-checked:font-bold peer-checked:text-ink peer-focus-visible:border-dashed peer-focus-visible:border-ink ${o.groesse || 'text-[0.944rem]'}`}
+          >
+            {o.label}
+          </span>
+        </label>
+      ))}
+    </div>
+  )
+}
+
 export default function Settings() {
   const { t } = useTranslation()
-  const { profile, updateProfile } = useAuth()
+  const { user, profile, updateProfile, logout } = useAuth()
 
   if (!profile) return null
 
   return (
-    <div className="max-w-md">
-      <h1 className="text-2xl font-bold mb-6">{t('settings.title')}</h1>
+    <div>
+      <p className="versalien">{t('app.name')}</p>
+      <h1 className="schlagzeile mt-2 mb-8">{t('settings.title')}</h1>
 
-      <fieldset className="mb-6">
-        <legend className="font-medium mb-2">{t('settings.language')}</legend>
-        <div className="flex flex-col gap-2">
-          {SPRACHEN.map((s) => (
-            <label key={s.code} className="flex items-center gap-3 min-h-touch">
-              <input
-                type="radio"
-                name="sprache"
-                value={s.code}
-                checked={profile.sprache === s.code}
-                onChange={() => updateProfile({ sprache: s.code })}
-                className="w-6 h-6"
-              />
-              <span className="text-lg">{s.label}</span>
-            </label>
-          ))}
+      <Abschnitt titel={t('settings.language')} als="fieldset">
+        <Textschalter
+          name="sprache"
+          wert={profile.sprache}
+          onWahl={(sprache) => updateProfile({ sprache })}
+          optionen={SPRACHEN.map((s) => ({ wert: s.code, label: s.label, lang: s.code }))}
+        />
+      </Abschnitt>
+
+      <Abschnitt titel={t('settings.fontSize')} als="fieldset">
+        {/* Jede Option zeigt sich in ihrer eigenen Größe - die Einstellung erklärt sich selbst. */}
+        <Textschalter
+          name="schriftgroesse"
+          wert={profile.schriftgroesse}
+          onWahl={(schriftgroesse) => updateProfile({ schriftgroesse })}
+          optionen={[
+            { wert: 'klein', label: t('settings.fontSizeSmall'), groesse: 'text-[0.778rem]' },
+            { wert: 'normal', label: t('settings.fontSizeNormal'), groesse: 'text-[0.944rem]' },
+            { wert: 'gross', label: t('settings.fontSizeLarge'), groesse: 'text-[1.167rem]' },
+          ]}
+        />
+      </Abschnitt>
+
+      <Abschnitt titel={t('settings.radius')} als="fieldset">
+        <Textschalter
+          name="umkreis"
+          wert={profile.umkreisKm}
+          onWahl={(umkreisKm) => updateProfile({ umkreisKm })}
+          optionen={RADIEN_KM.map((km) => ({ wert: km, label: `${km} km` }))}
+        />
+      </Abschnitt>
+
+      <Abschnitt titel={t('settings.location')}>
+        <dl className="mt-3 flex items-baseline justify-between gap-4 text-[0.944rem] tracking-[-0.02em]">
+          <dt className="font-medium">{t('settings.city')}</dt>
+          <dd className="font-bold">{profile.stadt}</dd>
+        </dl>
+      </Abschnitt>
+
+      <Abschnitt titel={t('settings.account')}>
+        <div className="mt-1 flex items-center justify-between gap-4 text-[0.944rem] tracking-[-0.02em]">
+          <span className="min-w-0 truncate font-medium">{profile.email || user?.email}</span>
+          <button
+            type="button"
+            onClick={logout}
+            className="min-h-touch shrink-0 font-bold underline decoration-2 underline-offset-4"
+          >
+            {t('nav.logout')}
+          </button>
         </div>
-      </fieldset>
+      </Abschnitt>
 
-      <fieldset className="mb-6">
-        <legend className="font-medium mb-2">{t('settings.fontSize')}</legend>
-        <div className="flex flex-col gap-2">
-          {[
-            ['klein', t('settings.fontSizeSmall')],
-            ['normal', t('settings.fontSizeNormal')],
-            ['gross', t('settings.fontSizeLarge')],
-          ].map(([wert, label]) => (
-            <label key={wert} className="flex items-center gap-3 min-h-touch">
-              <input
-                type="radio"
-                name="schriftgroesse"
-                value={wert}
-                checked={profile.schriftgroesse === wert}
-                onChange={() => updateProfile({ schriftgroesse: wert })}
-                className="w-6 h-6"
-              />
-              <span className="text-lg">{label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <fieldset className="mb-6">
-        <legend className="font-medium mb-2">{t('settings.radius')}</legend>
-        <div className="flex gap-2 flex-wrap">
-          {RADIEN_KM.map((km) => (
-            <button
-              key={km}
-              type="button"
-              onClick={() => updateProfile({ umkreisKm: km })}
-              className={`min-h-touch min-w-touch px-4 rounded-lg border-2 text-lg font-medium ${
-                profile.umkreisKm === km
-                  ? 'bg-accent text-white border-accent'
-                  : 'border-ink/20'
-              }`}
-            >
-              {km} km
-            </button>
-          ))}
-        </div>
-      </fieldset>
-
-      <p className="text-ink/70">
-        {t('settings.city')}: {profile.stadt}
-      </p>
+      <p className="border-t border-linie pt-5 text-[0.722rem] text-muted">{t('settings.autosave')}</p>
     </div>
   )
 }

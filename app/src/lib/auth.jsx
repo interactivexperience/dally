@@ -5,6 +5,7 @@ import {
   signOut,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
+import i18n from '../i18n/index.js'
 import { auth, db } from './firebase'
 
 const AuthContext = createContext(null)
@@ -31,17 +32,22 @@ export function AuthProvider({ children }) {
       if (firebaseUser) {
         const ref = doc(db, 'users', firebaseUser.uid)
         const snap = await getDoc(ref)
+        let geladen
         if (snap.exists()) {
-          setProfile(snap.data())
+          geladen = snap.data()
         } else {
-          const initial = {
+          geladen = {
             ...DEFAULT_PROFILE,
             email: firebaseUser.email,
             erstelltAm: serverTimestamp(),
           }
-          await setDoc(ref, initial)
-          setProfile(initial)
+          await setDoc(ref, geladen)
         }
+        // Sprache umstellen, bevor die Oberfläche mit dem Profil erscheint. Sonst
+        // startet sie kurz auf Deutsch, und was im selben Moment eingehängt wird
+        // (z. B. die Tab-Leiste), kann den Wechsel verpassen.
+        await i18n.changeLanguage(geladen.sprache || DEFAULT_PROFILE.sprache)
+        setProfile(geladen)
       } else {
         setProfile(null)
       }

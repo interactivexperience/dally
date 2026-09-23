@@ -6,7 +6,8 @@
   "nav": {
     "offers": "Offers",
     "settings": "Settings",
-    "logout": "Log out"
+    "logout": "Log out",
+    "main": "Main navigation"
   },
   "login": {
     "title": "Log in",
@@ -22,16 +23,19 @@
     "searchLabel": "Search offers",
     "searchPlaceholder": "e.g. butter, diapers, apple …",
     "discounterLabel": "Store",
-    "allDiscounters": "All stores",
+    "allDiscounters": "All",
     "empty": "No offers found. Try a different search term or store.",
     "loading": "Loading offers …",
     "new": "New",
-    "validUntil": "Valid until {{date}}",
+    "validUntil": "until {{date}}",
     "perUnit": "per {{unit}}",
-    "originalPriceLabel": "was {{price}} €",
+    "originalPriceLabel": "was {{price}}",
     "viewOriginal": "View offer at store",
     "lastUpdated": "Last updated: {{date}}",
-    "refresh": "Refresh view"
+    "refresh": "Refresh view",
+    "week": "Week {{week}}",
+    "count_one": "{{count}} offer",
+    "count_other": "{{count}} offers"
   },
   "settings": {
     "title": "Settings",
@@ -41,7 +45,10 @@
     "fontSizeNormal": "Normal",
     "fontSizeLarge": "Large",
     "city": "City",
-    "radius": "Radius"
+    "radius": "Radius",
+    "location": "Location",
+    "account": "Account",
+    "autosave": "Changes are saved right away."
   },
   "common": {
     "save": "Save",

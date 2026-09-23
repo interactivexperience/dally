@@ -18,6 +18,27 @@ Vollständiges Konzept mit Architektur-Begründungen: **konzept.md** — bei Unk
 - Bildlinks nur als Hotlink zum Original, keine eigenen Bildkopien (konzept.md Punkt 16)
 - Kein Feature ohne Kostenlos-Weg — vor jeder neuen Abhängigkeit prüfen, ob sie ein Billing-Konto erzwingt
 
+## UI-Design (mit dem Nutzer in vielen Runden abgestimmt — nicht eigenmächtig ändern)
+- **Neutral und typografisch.** Papier `#F4F3EF`, Tinte `#1A1A17`, Sekundärtext `muted`
+  `#625F57` (Tokens in `app/tailwind.config.js`). Keine Akzentfarbe: eine Auswahl wird
+  unterstrichen (Händler-Filter, Einstellungen), nie farbig gefüllt und nie umrandet.
+- **Die Typografie trägt**, in drei Registern mit der Systemschrift: `.schlagzeile` (fett, groß),
+  normale Auszeichnung, `.versalien` (gesperrte Großbuchstaben) für alles Beiläufige (Händler,
+  Einheit, Datum, Abschnittsmarken). Preise groß mit Tabellenziffern, € nur für Screenreader.
+- **Keine Kästen, Karten oder Radien im Inhalt**, keine verschachtelten Container. Getrennt wird mit
+  Haarlinien (`linie`). Einzige Farbfläche: Pastellquadrate hinter Produktbildern, eine Farbe pro
+  Händler — Pastell als Farbe, nicht als verspielte Form (keine Kreise).
+- **Einzige runde Form: die Tab-Leiste in Apple Liquid Glass** (`app/src/components/TabBar.jsx`,
+  Stile in `app/src/index.css`). In Ruhe Milchglas-Leiste mit leicht dunklerer Auswahlkapsel;
+  beim Antippen und beim Wechsel hebt sich die Kapsel zur klaren Linse (größer als die Leiste,
+  Lichtkante, Farbsaum, vergrößerter Inhalt) und gleitet federnd zum Ziel.
+- Nutzerwünsche aus der Abstimmung: schlicht, leise, kräftige Typografie. Abgelehnt wurden
+  verspielte Elemente, Pillen-in-Pillen, Rahmen um Auswahlen, dunkle und „altbackene“ Paletten.
+- Barrierefreiheit gilt auch hier (konzept.md Punkt 13): Textfarben ≥ 4,5:1, Tippflächen ≥ 48px
+  (auch wenn der Text optisch kleiner ist), nichts nur per Wischen erreichbar (Händler-Filter bricht
+  um statt seitlich zu scrollen), Eingabefelder ≥ 16px (sonst zoomt iOS Safari),
+  `prefers-reduced-motion` und `prefers-reduced-transparency` werden respektiert.
+
 ## Repo-Struktur
 ```
 app/                    Vite/React PWA (Frontend)
@@ -38,6 +59,10 @@ firebase.json           Firestore-Config (Rules-Deploy)
     fehlertolerante Orchestrierung (ein kaputtes Modul blockiert die anderen nicht)
   - Einfache Filter-UI (Text-Suche + Discounter-Filter, ohne Themen-KI/Gemini — folgt Phase 2)
   - Ein Nutzer (Login), barrierefreies Grundlayout, UI dreisprachig (DE/VI/EN)
+  - Oberfläche nach dem abgestimmten UI-Konzept umgesetzt (siehe „UI-Design“ oben): Angebote,
+    Einstellungen und Anmeldung. Abmelden sitzt in den Einstellungen, weil es keinen Kopfbalken
+    mehr gibt. Die Profilsprache wird gesetzt, bevor die Oberfläche erscheint (`lib/auth.jsx`),
+    sonst startet die App kurz auf Deutsch
 - **Scraper-Verifizierungsstand pro Discounter** (`scraper/src/discounters/*.js`):
   - ✅ `rewe.js` — gegen echte Angebotsseite verifiziert (REWE Markt Wolbeckerstraße 44, Münster), funktioniert
   - ⚠️ `dm.js` — verifiziert, aber bewusst reduzierter Umfang: dm.de hat keine Preis-Angebotsseite wie
